@@ -1,177 +1,154 @@
-4. React Application Code
 App.js
-jsx
-Copy code
 
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import UserList from "./components/UserList";
-import AddUser from "./components/AddUser";
-import EditUser from "./components/EditUser";
+import Home from "./pages/Home";
+import EditUser from "./pages/EditUser";
 
-function App() {
+const App = () => {
   return (
     <Router>
-      <div>
-        <h1>React CRUD Application</h1>
-        <Routes>
-          <Route path="/" element={<UserList />} />
-          <Route path="/add" element={<AddUser />} />
-          <Route path="/edit/:id" element={<EditUser />} />
-        </Routes>
-      </div>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/edit/:id" element={<EditUser />} />
+      </Routes>
     </Router>
   );
-}
+};
 
 export default App;
 
-UserList.js
-Displays the list of users.
 
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+UserCard.js
+
+import React from "react";
+import { useNavigate } from "react-router-dom";
+
+const UserCard = ({ user }) => {
+  const navigate = useNavigate();
+
+  return (
+    <div
+      style={{
+        border: "1px solid #ccc",
+        borderRadius: "8px",
+        padding: "16px",
+        margin: "16px",
+        cursor: "pointer",
+      }}
+      onClick={() => navigate(`/edit/${user.id}`)}
+    >
+      <h3>{user.name}</h3>
+      <p>{user.email}</p>
+    </div>
+  );
+};
+
+export default UserCard;
+
+UserList.js
+
+import React, { useEffect, useState } from "react";
 import axios from "axios";
+import UserCard from "./UserCard";
 
 const UserList = () => {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    fetchUsers();
+    axios.get("https://jsonplaceholder.typicode.com/users").then((res) => {
+      setUsers(res.data);
+    });
   }, []);
-
-  const fetchUsers = async () => {
-    const response = await axios.get("http://localhost:5000/users");
-    setUsers(response.data);
-  };
-
-  const deleteUser = async (id) => {
-    await axios.delete(`http://localhost:5000/users/${id}`);
-    fetchUsers();
-  };
 
   return (
     <div>
-      <Link to="/add">Add User</Link>
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => (
-            <tr key={user.id}>
-              <td>{user.name}</td>
-              <td>{user.email}</td>
-              <td>
-                <Link to={`/edit/${user.id}`}>Edit</Link>
-                <button onClick={() => deleteUser(user.id)}>Delete</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      {users.map((user) => (
+        <UserCard key={user.id} user={user} />
+      ))}
     </div>
   );
 };
 
 export default UserList;
 
-AddUser.js
-Allows adding a new user.
+Home.js
 
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import React from "react";
+import UserList from "../components/UserList";
 
-const AddUser = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const navigate = useNavigate();
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await axios.post("http://localhost:5000/users", { name, email });
-    navigate("/");
-  };
-
+const Home = () => {
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label>Name:</label>
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-      </div>
-      <div>
-        <label>Email:</label>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-      </div>
-      <button type="submit">Add User</button>
-    </form>
+    <div>
+      <h1>User List</h1>
+      <UserList />
+    </div>
   );
 };
 
-export default AddUser;
+export default Home;
 
 EditUser.js
-Allows editing an existing user.
 
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const EditUser = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
   const { id } = useParams();
   const navigate = useNavigate();
+  const [user, setUser] = useState({ name: "", email: "" });
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const response = await axios.get(`http://localhost:5000/users/${id}`);
-      setName(response.data.name);
-      setEmail(response.data.email);
-    };
-    fetchUser();
+    axios.get(`https://jsonplaceholder.typicode.com/users/${id}`).then((res) => {
+      setUser(res.data);
+    });
   }, [id]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await axios.put(`http://localhost:5000/users/${id}`, { name, email });
-    navigate("/");
+  const handleUpdate = () => {
+    axios.put(`https://jsonplaceholder.typicode.com/users/${id}`, user).then(() => {
+      alert("User updated!");
+      navigate("/");
+    });
+  };
+
+  const handleDelete = () => {
+    axios.delete(`https://jsonplaceholder.typicode.com/users/${id}`).then(() => {
+      alert("User deleted!");
+      navigate("/");
+    });
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label>Name:</label>
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-      </div>
-      <div>
-        <label>Email:</label>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-      </div>
-      <button type="submit">Update User</button>
-    </form>
+    <div>
+      <h1>Edit User</h1>
+      <form>
+        <div>
+          <label>Name:</label>
+          <input
+            type="text"
+            value={user.name}
+            onChange={(e) => setUser({ ...user, name: e.target.value })}
+          />
+        </div>
+        <div>
+          <label>Email:</label>
+          <input
+            type="email"
+            value={user.email}
+            onChange={(e) => setUser({ ...user, email: e.target.value })}
+          />
+        </div>
+        <button type="button" onClick={handleUpdate}>
+          Update
+        </button>
+        <button type="button" onClick={handleDelete}>
+          Delete
+        </button>
+      </form>
+    </div>
   );
 };
 
 export default EditUser;
+

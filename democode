@@ -1,154 +1,43 @@
-App.js
+import React, { useState } from "react";
 
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
-import EditUser from "./pages/EditUser";
+const LoginForm = ({ onSubmit }) => {
+  const [credentials, setCredentials] = useState({ email: "", password: "" });
 
-const App = () => {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/edit/:id" element={<EditUser />} />
-      </Routes>
-    </Router>
-  );
-};
-
-export default App;
-
-
-UserCard.js
-
-import React from "react";
-import { useNavigate } from "react-router-dom";
-
-const UserCard = ({ user }) => {
-  const navigate = useNavigate();
-
-  return (
-    <div
-      style={{
-        border: "1px solid #ccc",
-        borderRadius: "8px",
-        padding: "16px",
-        margin: "16px",
-        cursor: "pointer",
-      }}
-      onClick={() => navigate(`/edit/${user.id}`)}
-    >
-      <h3>{user.name}</h3>
-      <p>{user.email}</p>
-    </div>
-  );
-};
-
-export default UserCard;
-
-UserList.js
-
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import UserCard from "./UserCard";
-
-const UserList = () => {
-  const [users, setUsers] = useState([]);
-
-  useEffect(() => {
-    axios.get("https://jsonplaceholder.typicode.com/users").then((res) => {
-      setUsers(res.data);
-    });
-  }, []);
-
-  return (
-    <div>
-      {users.map((user) => (
-        <UserCard key={user.id} user={user} />
-      ))}
-    </div>
-  );
-};
-
-export default UserList;
-
-Home.js
-
-import React from "react";
-import UserList from "../components/UserList";
-
-const Home = () => {
-  return (
-    <div>
-      <h1>User List</h1>
-      <UserList />
-    </div>
-  );
-};
-
-export default Home;
-
-EditUser.js
-
-import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
-
-const EditUser = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const [user, setUser] = useState({ name: "", email: "" });
-
-  useEffect(() => {
-    axios.get(`https://jsonplaceholder.typicode.com/users/${id}`).then((res) => {
-      setUser(res.data);
-    });
-  }, [id]);
-
-  const handleUpdate = () => {
-    axios.put(`https://jsonplaceholder.typicode.com/users/${id}`, user).then(() => {
-      alert("User updated!");
-      navigate("/");
-    });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setCredentials({ ...credentials, [name]: value });
   };
 
-  const handleDelete = () => {
-    axios.delete(`https://jsonplaceholder.typicode.com/users/${id}`).then(() => {
-      alert("User deleted!");
-      navigate("/");
-    });
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit(credentials);
   };
 
   return (
-    <div>
-      <h1>Edit User</h1>
-      <form>
-        <div>
-          <label>Name:</label>
-          <input
-            type="text"
-            value={user.name}
-            onChange={(e) => setUser({ ...user, name: e.target.value })}
-          />
-        </div>
-        <div>
-          <label>Email:</label>
-          <input
-            type="email"
-            value={user.email}
-            onChange={(e) => setUser({ ...user, email: e.target.value })}
-          />
-        </div>
-        <button type="button" onClick={handleUpdate}>
-          Update
-        </button>
-        <button type="button" onClick={handleDelete}>
-          Delete
-        </button>
-      </form>
-    </div>
+    <form onSubmit={handleSubmit}>
+      <div>
+        <label>Email:</label>
+        <input
+          type="email"
+          name="email"
+          value={credentials.email}
+          onChange={handleChange}
+          required
+        />
+      </div>
+      <div>
+        <label>Password:</label>
+        <input
+          type="password"
+          name="password"
+          value={credentials.password}
+          onChange={handleChange}
+          required
+        />
+      </div>
+      <button type="submit">Login</button>
+    </form>
   );
 };
 
-export default EditUser;
-
+export default LoginForm;

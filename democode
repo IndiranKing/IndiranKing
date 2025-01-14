@@ -1,4 +1,149 @@
+1. Setup the Project
+Install Dependencies
+
+npx create-react-app crud-auth-context
+cd crud-auth-context
+npm install axios react-router-dom react-toastify json-server
+
+2. Setup JSON Server
+Create a db.json file in the root directory:
+
+{
+  "users": [],
+  "items": []
+}
+
+Add JSON Server to package.json scripts:
+
+src/
+├── context/
+│   └── AuthContext.js
+├── components/
+│   ├── LoginForm.js
+│   ├── SignupForm.js
+│   ├── ItemForm.js
+│   ├── ItemList.js
+├── pages/
+│   ├── Login.js
+│   ├── Signup.js
+│   ├── Dashboard.js
+├── styles/
+│   └── App.css
+├── App.js
+├── api.js
+├── index.js
+
+4. API File
+api.js
+
+import axios from "axios";
+
+const API = axios.create({ baseURL: "http://localhost:5000" });
+
+// Auth endpoints
+export const signupUser = (data) => API.post("/users", data);
+export const loginUser = (email, password) =>
+  API.get(`/users?email=${email}&password=${password}`);
+
+// CRUD endpoints for items
+export const getItems = () => API.get("/items");
+export const createItem = (data) => API.post("/items", data);
+export const updateItem = (id, data) => API.put(`/items/${id}`, data);
+export const deleteItem = (id) => API.delete(`/items/${id}`);
+
+5. Context API
+AuthContext.js
+
+import React, { createContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { signupUser, loginUser } from "../api";
+import { toast } from "react-toastify";
+
+export const AuthContext = createContext();
+
+const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+
+  const handleSignup = async (formData) => {
+    try {
+      await signupUser(formData);
+      toast.success("Signup successful!");
+      navigate("/login");
+    } catch {
+      toast.error("Signup failed!");
+    }
+  };
+
+  const handleLogin = async (credentials) => {
+    try {
+      const response = await loginUser(credentials.email, credentials.password);
+      if (response.data.length > 0) {
+        setUser(response.data[0]);
+        toast.success("Login successful!");
+        navigate("/dashboard");
+      } else {
+        toast.error("Invalid credentials!");
+      }
+    } catch {
+      toast.error("Login failed!");
+    }
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    toast.success("Logged out!");
+    navigate("/login");
+  };
+
+  return (
+    <AuthContext.Provider value={{ user, handleSignup, handleLogin, handleLogout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export default AuthProvider;
+
+6. Components
+SignupForm.js
+jsx
+Copy code
 import React, { useState } from "react";
+import "./SignupForm.css";
+
+const SignupForm = ({ onSubmit }) => {
+  const [formData, setFormData] = useState({ name: "", email: "", password: "" });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit(formData);
+  };
+
+  return (
+    <form className="form-container" onSubmit={handleSubmit}>
+      <h2>Sign Up</h2>
+      <input name="name" placeholder="Name" value={formData.name} onChange={handleChange} required />
+      <input name="email" placeholder="Email" value={formData.email} onChange={handleChange} required />
+      <input name="password" placeholder="Password" type="password" value={formData.password} onChange={handleChange} required />
+      <button type="submit">Sign Up</button>
+    </form>
+  );
+};
+
+export default SignupForm;
+LoginForm.js
+jsx
+Copy code
+
+
+import React, { useState } from "react";
+import "./LoginForm.css";
 
 const LoginForm = ({ onSubmit }) => {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
@@ -14,30 +159,174 @@ const LoginForm = ({ onSubmit }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label>Email:</label>
-        <input
-          type="email"
-          name="email"
-          value={credentials.email}
-          onChange={handleChange}
-          required
-        />
-      </div>
-      <div>
-        <label>Password:</label>
-        <input
-          type="password"
-          name="password"
-          value={credentials.password}
-          onChange={handleChange}
-          required
-        />
-      </div>
+    <form className="form-container" onSubmit={handleSubmit}>
+      <h2>Login</h2>
+      <input name="email" placeholder="Email" value={credentials.email} onChange={handleChange} required />
+      <input name="password" placeholder="Password" type="password" value={credentials.password} onChange={handleChange} required />
       <button type="submit">Login</button>
     </form>
   );
 };
 
 export default LoginForm;
+
+
+7. Pages
+Signup.js
+jsx
+Copy code
+import React, { useContext } from "react";
+import SignupForm from "../components/SignupForm";
+import { AuthContext } from "../context/AuthContext";
+
+const Signup = () => {
+  const { handleSignup } = useContext(AuthContext);
+
+  return (
+    <div className="page-container">
+      <SignupForm onSubmit={handleSignup} />
+    </div>
+  );
+};
+
+export default Signup;
+
+
+Login.js
+jsx
+Copy code
+import React, { useContext } from "react";
+import LoginForm from "../components/LoginForm";
+import { AuthContext } from "../context/AuthContext";
+
+const Login = () => {
+  const { handleLogin } = useContext(AuthContext);
+
+  return (
+    <div className="page-container">
+      <LoginForm onSubmit={handleLogin} />
+    </div>
+  );
+};
+
+export default Login;
+
+
+Dashboard.js
+jsx
+Copy code
+import React, { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
+
+const Dashboard = () => {
+  const { user, handleLogout } = useContext(AuthContext);
+
+  return (
+    <div className="page-container">
+      <h1>Welcome, {user?.name}</h1>
+      <button onClick={handleLogout}>Logout</button>
+    </div>
+  );
+};
+
+export default Dashboard;
+8. Add Routes
+App.js
+jsx
+Copy code
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Signup from "./pages/Signup";
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import AuthProvider from "./context/AuthContext";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "./styles/App.css";
+
+const App = () => {
+  return (
+    <AuthProvider>
+      <ToastContainer />
+      <Router>
+        <Routes>
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Routes>
+      </Router>
+    </AuthProvider>
+  );
+};
+
+export default App;
+
+
+9. Basic CSS Styling
+App.css
+css
+Copy code
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+}
+
+.page-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.form-container {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  width: 300px;
+  text-align: center;
+}
+
+.form-container input {
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.form-container button {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.form-container button:hover {
+  background-color: #45a049;
+}
+
+
+10. Run the Application
+Start the JSON Server:
+
+bash
+Copy code
+npm run server
+Start the React app:
+
+bash
+Copy code
+npm start
+Now you have a complete CRUD application with Signup, Login, Context API, backend JSON Server, and CSS styling!
+
+
+
+
+
+
+

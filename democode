@@ -4,50 +4,40 @@ import { AuthContext } from '../context/AuthContext';
 import './LoginSignup.css';
 import { toast } from 'react-toastify';
 
-// const Checkbox = (props) => {
-// 	return <label>
-// 		<input type="checkbox" name={props.name} checked={props.val} onChange={() => {props.setValue(!props.val)}}/>
-// 		{props.label}
-// 	</label>
-// }
 const LoginSignup = () => {
   const { register, login } = useContext(AuthContext);
   const [isLogin, setIsLogin] = useState(true);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
+  const [isAdmin, setIsAdmin] = useState(false); // Checkbox state
   const navigate = useNavigate();
-
-  // const [val, setVal] = useState(true); //initializes checkbox to false 
-  // const label = "My Checkbox!"
-  
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const role = isAdmin ? 'admin' : 'user'; // Determine role
+
     if (isLogin) {
-      const result = login(username, password);
+      const result = login(username, password, role);
       setMessage(result.message);
       if (result.success) {
-        toast.success("User Login successfully!")
-        navigate('/employee-list'); // Redirect to add-employee page after login
-      }
-      else{
-        toast.error("Incorrect Username and password")
+        toast.success(`${role.charAt(0).toUpperCase() + role.slice(1)} Login successfully!`);
+        navigate('/employee-list');
+      } else {
+        toast.error("Incorrect Username and password");
       }
     } else {
-      const result = register(username, password);
+      const result = register(username, password, role);
       setMessage(result.message);
-      toast.success("Register Successfully!")
+      toast.success(`${role.charAt(0).toUpperCase() + role.slice(1)} Registered Successfully!`);
       if (result.success) {
-        setIsLogin(true); // Switch to login after successful registration
+        setIsLogin(true);
       }
     }
   };
 
   return (
-    
     <div className="container">
-      {/* <Checkbox value={val} setValue={setVal} label={label}></Checkbox> */}
       <h2>{isLogin ? 'LOGIN' : 'SIGN UP'}</h2>
       <form onSubmit={handleSubmit}>
         <label>Username:</label>
@@ -58,7 +48,6 @@ const LoginSignup = () => {
           required
         />
 
-  
         <label>Password:</label>
         <input
           type="password"
@@ -66,25 +55,30 @@ const LoginSignup = () => {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <br />
- 
-        <button type="submit">{isLogin ? 'Login' : 'Sign Up'}</button>
-        <br />
         
+        {/* Checkbox to toggle between User and Admin */}
+        <label>
+          <input
+            type="checkbox"
+            checked={isAdmin}
+            onChange={() => setIsAdmin(!isAdmin)}
+          />
+          {isAdmin ? 'Admin' : 'User'}
+        </label>
+
+        <br />
+        <button type="submit">{isLogin ? 'Login' : 'Sign Up'}</button>
       </form>
+      
       {message && <p>{message}</p>}
+
       <div className="toggle-button">
-      <button onClick={() => setIsLogin(!isLogin)}>
-        {isLogin ? "Don't have an account? Sign Up" : 'Already have an account? Login'}
-      </button>
-    </div>
+        <button onClick={() => setIsLogin(!isLogin)}>
+          {isLogin ? "Don't have an account? Sign Up" : 'Already have an account? Login'}
+        </button>
+      </div>
     </div>
   );
 };
 
 export default LoginSignup;
-
-
-
-
-add one feature checkbox is used to login or signup when the checkbox is tick or untick (user login and user signup / admin login and admin signup)

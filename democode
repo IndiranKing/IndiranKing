@@ -1,192 +1,90 @@
-src/
-├── context/
-│   └── AuthContext.js
-├── pages/
-│   ├── Login.js
-│   ├── Dashboard.js
-├── components/
-│   └── ProtectedRoute.js
-├── App.js
-└── index.js
+import React, { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
+import './LoginSignup.css';
+import { toast } from 'react-toastify';
 
-3 Create Authentication Context
-The context will manage the authentication state across the app.
-
-import React, { createContext, useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
-
-const AuthContext = createContext();
-
-export const AuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+// const Checkbox = (props) => {
+// 	return <label>
+// 		<input type="checkbox" name={props.name} checked={props.val} onChange={() => {props.setValue(!props.val)}}/>
+// 		{props.label}
+// 	</label>
+// }
+const LoginSignup = () => {
+  const { register, login } = useContext(AuthContext);
+  const [isLogin, setIsLogin] = useState(true);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
-  const login = (username, password) => {
-    // Simple mock authentication
-    if (username === "user" && password === "password") {
-      setIsAuthenticated(true);
-      navigate("/dashboard");
-    } else {
-      alert("Invalid credentials");
-    }
-  };
-
-  const logout = () => {
-    setIsAuthenticated(false);
-    navigate("/login");
-  };
-
-  return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
-};
-
-export const useAuth = () => useContext(AuthContext);
-
-Create a Login Page
-The login page will use the login function from the AuthContext.
-
-import React, { useState } from "react";
-import { useAuth } from "../context/AuthContext";
-
-const Login = () => {
-  const { login } = useAuth();
-  const [form, setForm] = useState({ username: "", password: "" });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
-  };
+  // const [val, setVal] = useState(true); //initializes checkbox to false 
+  // const label = "My Checkbox!"
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    login(form.username, form.password);
+    if (isLogin) {
+      const result = login(username, password);
+      setMessage(result.message);
+      if (result.success) {
+        toast.success("User Login successfully!")
+        navigate('/employee-list'); // Redirect to add-employee page after login
+      }
+      else{
+        toast.error("Incorrect Username and password")
+      }
+    } else {
+      const result = register(username, password);
+      setMessage(result.message);
+      toast.success("Register Successfully!")
+      if (result.success) {
+        setIsLogin(true); // Switch to login after successful registration
+      }
+    }
   };
 
   return (
-    <div style={{ textAlign: "center", marginTop: "50px" }}>
-      <h2>Login</h2>
+    
+    <div className="container">
+      {/* <Checkbox value={val} setValue={setVal} label={label}></Checkbox> */}
+      <h2>{isLogin ? 'LOGIN' : 'SIGN UP'}</h2>
       <form onSubmit={handleSubmit}>
+        <label>Username:</label>
         <input
           type="text"
-          name="username"
-          placeholder="Username"
-          value={form.username}
-          onChange={handleChange}
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
           required
         />
-        <br />
+
+  
+        <label>Password:</label>
         <input
           type="password"
-          name="password"
-          placeholder="Password"
-          value={form.password}
-          onChange={handleChange}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           required
         />
         <br />
-        <button type="submit">Login</button>
+ 
+        <button type="submit">{isLogin ? 'Login' : 'Sign Up'}</button>
+        <br />
+        
       </form>
+      {message && <p>{message}</p>}
+      <div className="toggle-button">
+      <button onClick={() => setIsLogin(!isLogin)}>
+        {isLogin ? "Don't have an account? Sign Up" : 'Already have an account? Login'}
+      </button>
+    </div>
     </div>
   );
 };
 
-export default Login;
+export default LoginSignup;
 
-Create a Protected Route
-This component will redirect unauthenticated users to the login page.
 
-import React from "react";
-import { Navigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
 
-const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated } = useAuth();
 
-  return isAuthenticated ? children : <Navigate to="/login" />;
-};
-
-export default ProtectedRoute;
-
-Create a Dashboard Page
-The dashboard is a protected route.
-
-import React from "react";
-import { useAuth } from "../context/AuthContext";
-
-const Dashboard = () => {
-  const { logout } = useAuth();
-
-  return (
-    <div style={{ textAlign: "center", marginTop: "50px" }}>
-      <h2>Dashboard</h2>
-      <p>Welcome to the protected dashboard!</p>
-      <button onClick={logout}>Logout</button>
-    </div>
-  );
-};
-
-export default Dashboard;
-
-Set Up React Router
-Configure the routes and wrap the app in the AuthProvider.
-
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "./context/AuthContext";
-import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
-import ProtectedRoute from "./components/ProtectedRoute";
-
-const App = () => {
-  return (
-    <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
-      </Router>
-    </AuthProvider>
-  );
-};
-
-export default App;
-
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
-  margin: 0;
-  padding: 0;
-}
-
-input {
-  margin: 10px 0;
-  padding: 10px;
-  width: 200px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-button {
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #0056b3;
-}
-
+add one feature checkbox is used to login or signup when the checkbox is tick or untick (user login and user signup / admin login and admin signup)

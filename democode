@@ -1,3 +1,17 @@
 CARRYOVER (2) - COOS - IHUT - Canceled NFID not reflected in Status field on Project Summary
 
 Canceled NFID not reflected in Status field on Project Summary. Cancelation is reflected on NF Tree, but not in the Status field of the Project Summary. Result is that the Inside Hut dashboard is reflecting the incorrect status of the NFID.
+
+
+**Subject:** Clarification on Jira Ticket 771 – WFM Project  
+
+Dear Jeevitha,  
+
+I am currently working on the Tier 3 bug-fixing Jira ticket **#771** for the **WFM project**. Could you please provide more details about the bug, including its root cause and any relevant insights?  
+
+Additionally, if you have any suggested solutions or best practices for resolving this issue, I would appreciate your guidance. Also, could you confirm which repository I need to clone and provide instructions on the code setup process?  
+
+Looking forward to your response.  
+
+Best regards,  
+Indiran S.  

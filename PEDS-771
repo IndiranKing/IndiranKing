@@ -171,3 +171,91 @@ Pin
 
 Salma, Shaik added a comment - 15/Nov/24 8:15 AM
 Redirecting this to tier-2 POC as per email discussion.
+
+
+
+
+
+
+
+
+
+
+
+### **Steps to Fix the Issue**  
+
+From the Jira ticket and comments, the issue is that when an NFID is canceled, the **Status field** in the **Project Summary** is not updated, even though the cancellation is reflected in the **NF Tree**.  
+
+---
+
+### **1. Root Cause Analysis**  
+- The SQL query provided retrieves the **status of an NFID** from the `wfm_nf.nf_ihut_order` and `wfm_nf.nf_ihut_order_process_data` tables.  
+- The issue is that when an NFID is canceled, this status **may not have been updated**, which is why it still says "NEW."  
+- The **Inside Hut dashboard** reflects incorrect data because it relies on the Project Summary, which is not updated.  
+- **Possible reasons:**  
+  - The cancellation process does not trigger an update for the **Status field** in the **Project Summary**.  
+  - A missing database update in `wfm_nf.nf_ihut_order` or `wfm_nf.nf_ihut_order_process_data`.  
+  - The API that fetches NFID details is not retrieving the latest status.  
+
+---
+
+### **2. Debugging Steps**  
+#### **A. Check the Database Update Logic**  
+Run this query to check if the NFID status is updated in the database:  
+```sql
+SELECT o.status, pd.* 
+FROM wfm_nf.nf_ihut_order o 
+LEFT OUTER JOIN wfm_nf.nf_ihut_order_process_data pd 
+ON o.ihut_order_id = pd.ihut_order_id 
+WHERE o.nfid = '2410ARLZ';
+```
+- If the status is still **"NEW"**, then the backend logic **did not update** the status when the NFID was canceled.  
+
+#### **B. Check API Calls**  
+- Check the API responsible for retrieving NFID status for the **Project Summary**.  
+- Log the response and see if it correctly fetches the updated status.  
+
+#### **C. Investigate the Cancellation Process**  
+- Find where the NFID cancellation happens in the code.  
+- Check if an update to the `wfm_nf.nf_ihut_order` table is missing in the cancellation process.  
+- Look for any background job that updates statuses and check if it has failed.  
+
+---
+
+### **3. Fix the Issue**  
+#### **A. Update the Backend Logic**  
+- If the **status update is missing**, modify the code to ensure that the `wfm_nf.nf_ihut_order` table is updated when an NFID is canceled:  
+  ```sql
+  UPDATE wfm_nf.nf_ihut_order 
+  SET status = 'CANCELED' 
+  WHERE nfid = '2410ARLZ';
+  ```
+- Ensure this update happens **automatically** in the NFID cancellation process.  
+
+#### **B. Fix API Response (If Needed)**  
+- If the API fetching NFID status is not retrieving updated data, modify it to ensure it reflects the latest status from the database.  
+
+#### **C. Workaround for Existing Data**  
+- Since older NFIDs are still showing "NEW," you can fix them via a **bulk update**:  
+  ```sql
+  UPDATE wfm_nf.nf_ihut_order 
+  SET status = 'CANCELED' 
+  WHERE nfid IN (SELECT nfid FROM wfm_nf.nf_ihut_order_process_data WHERE status = 'CANCELED');
+  ```
+- This will ensure that all canceled NFIDs are correctly reflected in the **Project Summary**.  
+
+---
+
+### **4. Testing**  
+- Cancel a new NFID and check if the **Status field** in the **Project Summary** updates.  
+- Verify the **Inside Hut dashboard** reflects the correct status.  
+- Test different NFIDs to confirm the fix works across various cases.  
+
+---
+
+### **5. Next Steps**  
+- **Confirm with the team** if this fix is acceptable before deployment.  
+- If the issue is still happening in production, escalate it for immediate attention.  
+- Monitor logs after deployment to ensure the fix works.  
+
+Would you like help with the code changes or queries?

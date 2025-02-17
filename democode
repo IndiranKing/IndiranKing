@@ -15,3 +15,52 @@ Looking forward to your response.
 
 Best regards,  
 Indiran S.  
+
+
+
+To troubleshoot this bug, follow these steps:  
+
+### **1. Understand the Expected Behavior**  
+- When an NFID (Network Function ID) is canceled, the **Status field** on the **Project Summary** should be updated accordingly.  
+- The cancellation is correctly reflected in the **NF Tree**, but not in the **Status field** of the **Project Summary**.  
+- The **Inside Hut dashboard** is showing incorrect information because of this discrepancy.  
+
+### **2. Identify the Data Flow**  
+- How is the status of an NFID updated in the **Project Summary**?  
+- Check whether the **NF Tree** and **Project Summary** get data from the same source or different ones.  
+- Verify if any **event triggers** or **background jobs** update the Status field when an NFID is canceled.  
+
+### **3. Debugging Steps**  
+#### **A. Check the Database**  
+- Query the database to see if the correct status is stored:  
+  ```sql
+  SELECT status FROM project_summary WHERE nf_id = '<CANCELED_NFID>';
+  ```
+- If the database has the correct status but the UI is incorrect, the issue might be with the **front-end display or API fetching data**.  
+- If the database itself has the wrong status, the problem is likely in the **backend logic**.  
+
+#### **B. Check the Backend Code**  
+- Find the part of the code that updates the **Status field** in the **Project Summary** when an NFID is canceled.  
+- Look at the **logic that updates the status in the NF Tree** and see if a similar update is missing for the **Project Summary**.  
+- If a background job updates the status, check the logs for errors.  
+
+#### **C. Check API Calls**  
+- Identify which API updates the **Status field** in **Project Summary**.  
+- If the cancellation API updates the **NF Tree** but not **Project Summary**, it might be missing an update step.  
+
+#### **D. Front-End Debugging**  
+- If the database has the correct status but the UI does not reflect it, check:  
+  - Whether the **front-end API call** is fetching updated data.  
+  - Whether the **response JSON** contains the correct status.  
+  - Whether there is any **caching issue** causing old data to be displayed.  
+
+### **4. Fix the Issue**  
+- If the backend is missing an update, modify the logic to ensure the **Project Summary Status** is updated when an NFID is canceled.  
+- If the API is not returning the correct data, update it to fetch the latest status.  
+- If the UI is not displaying the correct status, ensure it fetches and refreshes data properly.  
+
+### **5. Test the Fix**  
+- Cancel an NFID and verify that the **Project Summary Status** updates correctly.  
+- Ensure the **Inside Hut dashboard** also reflects the correct status.  
+
+Would you like help checking specific logs or code snippets?

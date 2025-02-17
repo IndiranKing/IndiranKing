@@ -259,3 +259,50 @@ WHERE o.nfid = '2410ARLZ';
 - Monitor logs after deployment to ensure the fix works.  
 
 Would you like help with the code changes or queries?
+
+
+
+
+
+
+
+
+### **Explanation of the SQL Query**  
+
+```sql
+SELECT o.status, pd.* 
+FROM wfm_nf.nf_ihut_order o 
+LEFT OUTER JOIN wfm_nf.nf_ihut_order_process_data pd 
+ON o.ihut_order_id = pd.ihut_order_id 
+WHERE o.nfid = '2410ARLZ';
+```
+
+#### **Breakdown of Each Part:**
+
+1. **`SELECT o.status, pd.*`**  
+   - Selects the `status` column from the `wfm_nf.nf_ihut_order` table (`o.status`).  
+   - Selects **all columns** (`*`) from the `wfm_nf.nf_ihut_order_process_data` table (`pd.*`).  
+
+2. **`FROM wfm_nf.nf_ihut_order o`**  
+   - Retrieves data from the `wfm_nf.nf_ihut_order` table and assigns it an alias `o`.  
+
+3. **`LEFT OUTER JOIN wfm_nf.nf_ihut_order_process_data pd`**  
+   - Joins the `wfm_nf.nf_ihut_order_process_data` table (`pd`) using a **LEFT OUTER JOIN**.  
+   - This ensures **all records from `wfm_nf.nf_ihut_order`** are included, even if there is **no matching record** in `wfm_nf.nf_ihut_order_process_data`.  
+
+4. **`ON o.ihut_order_id = pd.ihut_order_id`**  
+   - The join condition: Matches records where `ihut_order_id` is the same in both tables.  
+   - If a record exists in `wfm_nf.nf_ihut_order` but not in `wfm_nf.nf_ihut_order_process_data`, the result will still show the `wfm_nf.nf_ihut_order` data, but `pd.*` columns will be `NULL`.  
+
+5. **`WHERE o.nfid = '2410ARLZ'`**  
+   - Filters results to only include records where `nfid = '2410ARLZ'`.  
+   - This ensures we retrieve data only for the specific **Network Function ID (NFID)**.  
+
+---
+
+### **What This Query Does**  
+- It fetches the **status** of NFID `2410ARLZ` from `wfm_nf.nf_ihut_order`.  
+- It also retrieves any related process data from `wfm_nf.nf_ihut_order_process_data`, if available.  
+- If no matching record is found in `wfm_nf.nf_ihut_order_process_data`, those columns will be `NULL` due to the **LEFT OUTER JOIN**.  
+
+Would you like help modifying this query or adding additional filters?

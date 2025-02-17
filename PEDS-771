@@ -1,0 +1,173 @@
+CARRYOVER (2) - COOS - IHUT - Canceled NFID not reflected in Status field on Project Summary
+
+Canceled NFID not reflected in Status field on Project Summary. Cancelation is reflected on NF Tree, but not in the Status field of the Project Summary. Result is that the Inside Hut dashboard is reflecting the incorrect status of the NFID.
+
+
+**Subject:** Clarification on Jira Ticket 771 – WFM Project  
+
+Dear Jeevitha,  
+
+I am currently working on the Tier 3 bug-fixing Jira ticket **#771** for the **WFM project**. Could you please provide more details about the bug, including its root cause and any relevant insights?  
+
+Additionally, if you have any suggested solutions or best practices for resolving this issue, I would appreciate your guidance. Also, could you confirm which repository I need to clone and provide instructions on the code setup process?  
+
+Looking forward to your response.  
+
+Best regards,  
+Indiran S.  
+
+
+
+To troubleshoot this bug, follow these steps:  
+
+### **1. Understand the Expected Behavior**  
+- When an NFID (Network Function ID) is canceled, the **Status field** on the **Project Summary** should be updated accordingly.  
+- The cancellation is correctly reflected in the **NF Tree**, but not in the **Status field** of the **Project Summary**.  
+- The **Inside Hut dashboard** is showing incorrect information because of this discrepancy.  
+
+### **2. Identify the Data Flow**  
+- How is the status of an NFID updated in the **Project Summary**?  
+- Check whether the **NF Tree** and **Project Summary** get data from the same source or different ones.  
+- Verify if any **event triggers** or **background jobs** update the Status field when an NFID is canceled.  
+
+### **3. Debugging Steps**  
+#### **A. Check the Database**  
+- Query the database to see if the correct status is stored:  
+  ```sql
+  SELECT status FROM project_summary WHERE nf_id = '<CANCELED_NFID>';
+  ```
+- If the database has the correct status but the UI is incorrect, the issue might be with the **front-end display or API fetching data**.  
+- If the database itself has the wrong status, the problem is likely in the **backend logic**.  
+
+#### **B. Check the Backend Code**  
+- Find the part of the code that updates the **Status field** in the **Project Summary** when an NFID is canceled.  
+- Look at the **logic that updates the status in the NF Tree** and see if a similar update is missing for the **Project Summary**.  
+- If a background job updates the status, check the logs for errors.  
+
+#### **C. Check API Calls**  
+- Identify which API updates the **Status field** in **Project Summary**.  
+- If the cancellation API updates the **NF Tree** but not **Project Summary**, it might be missing an update step.  
+
+#### **D. Front-End Debugging**  
+- If the database has the correct status but the UI does not reflect it, check:  
+  - Whether the **front-end API call** is fetching updated data.  
+  - Whether the **response JSON** contains the correct status.  
+  - Whether there is any **caching issue** causing old data to be displayed.  
+
+### **4. Fix the Issue**  
+- If the backend is missing an update, modify the logic to ensure the **Project Summary Status** is updated when an NFID is canceled.  
+- If the API is not returning the correct data, update it to fetch the latest status.  
+- If the UI is not displaying the correct status, ensure it fetches and refreshes data properly.  
+
+### **5. Test the Fix**  
+- Cancel an NFID and verify that the **Project Summary Status** updates correctly.  
+- Ensure the **Inside Hut dashboard** also reflects the correct status.  
+
+Would you like help checking specific logs or code snippets?
+
+########
+Explain this query 
+select o.* , pd.* from wfm_nf.nf_ihut_order o left outer join wfm_nf.nf_ihut_order_process_data pd on
+o.ihut_order_id = pd.ihut_order_id where nfid = '2410ARLZ';
+
+jira ticket
+CARRYOVER (2) - COOS - IHUT - Canceled NFID not reflected in Status field on Project Summary
+Icon: Bug Bug
+Resolution:Unresolved
+Labels:
+IHUT
+Priority Level:High
+Environment - Test Phase:Production
+Impacted Applications(VAST):(F86V) - WFM-NE - NSIT - Moorthi Subbarayan
+Story Points:1
+
+Description:
+Canceled NFID not reflected in Status field on Project Summary. Cancelation is reflected on NF Tree, but not in the Status field of the Project Summary. Result is that the Inside Hut dashboard is reflecting the incorrect status of the NFID.
+
+
+jira comments
+select o.* , pd.* from wfm_nf.nf_ihut_order o left outer join wfm_nf.nf_ihut_order_process_data pd on
+o.ihut_order_id = pd.ihut_order_id where nfid = '2410ARLZ';
+
+ 
+
+This is the query to get status of an NFID to display in project summary section. The issue here is when an NFID is cancelled, this might not have been updated due to which it still says 'NEW'.
+
+ 
+
+Maron, Susan S  Can you please confirm if this is still happening in prod. If not is it okay if we fix existing ones via workaround? Kindly confirm.
+
+
+Pin
+
+ Collapse comment: Salma, Shaik added a comment - 11/Dec/24 10:34 AM
+
+Salma, Shaik added a comment - 11/Dec/24 10:34 AM
+Mohan, Jeevitha Can you please confirm if we can reprioritize this ticket to next sprint. Because for this sprint , as per the email 
+
+https://onejira.verizon.com/browse/PEDS-960
+https://onejira.verizon.com/browse/PEDS-933
+
+https://onejira.verizon.com/browse/PEDS-966
+
+These are to be prioritised for sprint-15
+
+
+Pin
+
+ Collapse comment: Salma, Shaik added a comment - 03/Dec/24 6:25 AM
+
+Salma, Shaik added a comment - 03/Dec/24 6:25 AM
+Need URL, payload details for this API to check what is the API impacted and also the tables impacted on this so I can provide a work around.
+
+
+Pin
+
+ Collapse comment: Vegi, Santhosh Kumar added a comment - 25/Nov/24 6:52 PM
+
+Vegi, Santhosh Kumar added a comment - 25/Nov/24 6:52 PM
+Update componenet status needs to be updated to canceled, when NFID is canceled using Advanced NFID search.
+
+Dev team please make necessary changes to reflect the right status.
+
+
+Pin
+
+ Collapse comment: Vegi, Santhosh Kumar added a comment - 20/Nov/24 3:53 PM
+
+Vegi, Santhosh Kumar added a comment - 20/Nov/24 3:53 PM
+Maron, Susan S  can you please add the AYS incident to this Jira?
+
+
+Pin
+
+ Collapse comment: S, Maheshkumar added a comment - 17/Nov/24 8:04 AM
+
+S, Maheshkumar added a comment - 17/Nov/24 8:04 AM
+Salma, Shaik
+Nov 15, 2024, 1:44 PM (2 days ago)
+to Senthil, Viknesh, Santhosh, Kaviarasan, S, me, Mooventhiran, Saravanakumar, M, D, R
+
+Hi Senthil,
+
+Actually PEDS-641 is not the only bug that came directly from the user,
+I'm putting the list of bugs that needs to be taken care of by tier-2 for your reference.
+https://onejira.verizon.com/browse/PEDS-771
+https://onejira.verizon.com/browse/PEDS-641
+https://onejira.verizon.com/browse/PEDS-597
+https://onejira.verizon.com/browse/PEDS-743
+
+Since these need to be evaluated by tier-2 first, I'm redirecting these tickets to @Santhosh Kumar Vegi . Once he's done with his analysis, if he still needs tier-3 support, I will be available for a call or slack communication.
+
+@Santhosh Kumar Vegi Kindly take a look at these tickets.
+
+Thanks & Regards,
+Shaik Salma
+
+
+Pin
+
+ Collapse comment: Salma, Shaik added a comment - 15/Nov/24 8:15 AM
+
+Salma, Shaik added a comment - 15/Nov/24 8:15 AM
+Redirecting this to tier-2 POC as per email discussion.

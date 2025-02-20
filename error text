@@ -81,3 +81,10 @@ dbWfmProperties = jdbcTemplate.query(sql,
     keyNames.toArray(), 
     DbWfmPropertiesDTO.getMapper()
 );
+
+
+
+
+------
+String sql = "SELECT DOMAIN_ID, `KEY`, VALUE FROM WFM_CORE.WFM_PROPERTIES "
+           + "WHERE FIND_IN_SET(`KEY`, :keyNames) AND DOMAIN_ID = :domainId";

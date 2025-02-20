@@ -1,0 +1,98 @@
+2025-02-20T15:56:24.934+05:30[0;39m [32m INFO[0;39m [35m10908[0;39m [2m---[0;39m [2m[           main][0;39m [2m[0;39m[36mcom.verizon.ihut.InsideHutApplication   [0;39m [2m:[0;39m Started InsideHutApplication in 10.142 seconds (process running for 11.766)
+[2m2025-02-20T15:56:24.940+05:30[0;39m [32mDEBUG[0;39m [35m10908[0;39m [2m---[0;39m [2m[           main][0;39m [2m[0;39m[36mo.s.b.a.ApplicationAvailabilityBean     [0;39m [2m:[0;39m Application availability state LivenessState changed to CORRECT
+[2m2025-02-20T15:56:24.944+05:30[0;39m [32mDEBUG[0;39m [35m10908[0;39m [2m---[0;39m [2m[           main][0;39m [2m[0;39m[36mo.s.b.a.ApplicationAvailabilityBean     [0;39m [2m:[0;39m Application availability state ReadinessState changed to ACCEPTING_TRAFFIC
+[2m2025-02-20T15:56:25.320+05:30[0;39m [32m INFO[0;39m [35m10908[0;39m [2m---[0;39m [2m[on(5)-127.0.0.1][0;39m [2m[0;39m[36mo.a.c.c.C.[.[.[/insidehut-service]      [0;39m [2m:[0;39m Initializing Spring DispatcherServlet 'dispatcherServlet'
+[2m2025-02-20T15:56:25.321+05:30[0;39m [32m INFO[0;39m [35m10908[0;39m [2m---[0;39m [2m[on(5)-127.0.0.1][0;39m [2m[0;39m[36mo.s.web.servlet.DispatcherServlet       [0;39m [2m:[0;39m Initializing Servlet 'dispatcherServlet'
+[2m2025-02-20T15:56:25.321+05:30[0;39m [32mDEBUG[0;39m [35m10908[0;39m [2m---[0;39m [2m[on(5)-127.0.0.1][0;39m [2m[0;39m[36mo.s.web.servlet.DispatcherServlet       [0;39m [2m:[0;39m Detected StandardServletMultipartResolver
+[2m2025-02-20T15:56:25.322+05:30[0;39m [32mDEBUG[0;39m [35m10908[0;39m [2m---[0;39m [2m[on(5)-127.0.0.1][0;39m [2m[0;39m[36mo.s.web.servlet.DispatcherServlet       [0;39m [2m:[0;39m Detected AcceptHeaderLocaleResolver
+[2m2025-02-20T15:56:25.322+05:30[0;39m [32mDEBUG[0;39m [35m10908[0;39m [2m---[0;39m [2m[on(5)-127.0.0.1][0;39m [2m[0;39m[36mo.s.web.servlet.DispatcherServlet       [0;39m [2m:[0;39m Detected FixedThemeResolver
+[2m2025-02-20T15:56:25.323+05:30[0;39m [32mDEBUG[0;39m [35m10908[0;39m [2m---[0;39m [2m[on(5)-127.0.0.1][0;39m [2m[0;39m[36mo.s.web.servlet.DispatcherServlet       [0;39m [2m:[0;39m Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@62d21afd
+[2m2025-02-20T15:56:25.324+05:30[0;39m [32mDEBUG[0;39m [35m10908[0;39m [2m---[0;39m [2m[on(5)-127.0.0.1][0;39m [2m[0;39m[36mo.s.web.servlet.DispatcherServlet       [0;39m [2m:[0;39m Detected org.springframework.web.servlet.support.SessionFlashMapManager@25e24908
+[2m2025-02-20T15:56:25.324+05:30[0;39m [32mDEBUG[0;39m [35m10908[0;39m [2m---[0;39m [2m[on(5)-127.0.0.1][0;39m [2m[0;39m[36mo.s.web.servlet.DispatcherServlet       [0;39m [2m:[0;39m enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+[2m2025-02-20T15:56:25.324+05:30[0;39m [32m INFO[0;39m [35m10908[0;39m [2m---[0;39m [2m[on(5)-127.0.0.1][0;39m [2m[0;39m[36mo.s.web.servlet.DispatcherServlet       [0;39m [2m:[0;39m Completed initialization in 3 ms
+[2m2025-02-20T15:56:32.797+05:30[0;39m [32mDEBUG[0;39m [35m10908[0;39m [2m---[0;39m [2m[nio-8080-exec-1][0;39m [2m[0;39m[36mo.s.web.servlet.DispatcherServlet       [0;39m [2m:[0;39m POST "/insidehut-service/updateNftreeNodeStatus", parameters={}
+[2m2025-02-20T15:56:32.812+05:30[0;39m [32mDEBUG[0;39m [35m10908[0;39m [2m---[0;39m [2m[nio-8080-exec-1][0;39m [2m[0;39m[36ms.w.s.m.m.a.RequestMappingHandlerMapping[0;39m [2m:[0;39m Mapped to com.verizon.ihut.controller.IhutController#updateNftreeNodeStatus(UpdateNftreeNodeStatusRequest, BindingResult)
+[2m2025-02-20T15:56:32.935+05:30[0;39m [32mDEBUG[0;39m [35m10908[0;39m [2m---[0;39m [2m[nio-8080-exec-1][0;39m [2m[0;39m[36mm.m.a.RequestResponseBodyMethodProcessor[0;39m [2m:[0;39m Read "application/json;charset=UTF-8" to [UpdateNftreeNodeStatusRequest [nfid=2401AOFT, status=completed]]
+[2m2025-02-20T15:56:33.027+05:30[0;39m [32m INFO[0;39m [35m10908[0;39m [2m---[0;39m [2m[nio-8080-exec-1][0;39m [2m[0;39m[36mIhutController.class                    [0;39m [2m:[0;39m POST Endpoint /updateNftreeNodeStatus request:: UpdateNftreeNodeStatusRequest [nfid=2401AOFT, status=completed]
+[2m2025-02-20T15:56:33.027+05:30[0;39m [32m INFO[0;39m [35m10908[0;39m [2m---[0;39m [2m[nio-8080-exec-1][0;39m [2m[0;39m[36mIHutsService.class                      [0;39m [2m:[0;39m updateNftreeNodeStatus inputs:: updateNftreeNodeStatusRequest = UpdateNftreeNodeStatusRequest [nfid=2401AOFT, status=completed], response = com.verizon.ihut.model.EndpointResponse@74f0763e
+[2m2025-02-20T15:56:33.030+05:30[0;39m [32m INFO[0;39m [35m10908[0;39m [2m---[0;39m [2m[nio-8080-exec-1][0;39m [2m[0;39m[36mIHutDAO.class                           [0;39m [2m:[0;39m getProjectId inputs:: nfid = 2401AOFT
+[2m2025-02-20T15:56:33.035+05:30[0;39m [32mDEBUG[0;39m [35m10908[0;39m [2m---[0;39m [2m[nio-8080-exec-1][0;39m [2m[0;39m[36mo.s.jdbc.core.JdbcTemplate              [0;39m [2m:[0;39m Executing prepared SQL query
+[2m2025-02-20T15:56:33.036+05:30[0;39m [32mDEBUG[0;39m [35m10908[0;39m [2m---[0;39m [2m[nio-8080-exec-1][0;39m [2m[0;39m[36mo.s.jdbc.core.JdbcTemplate              [0;39m [2m:[0;39m Executing prepared SQL statement [SELECT PROJECT_ID AS COMPONENTVALUE FROM WFM_NF.NF_RHPAM_CASE_DETAILS WHERE NF_ID = ? AND ROWNUM < 2 ORDER BY ID DESC]
+[2m2025-02-20T15:56:33.812+05:30[0;39m [32m INFO[0;39m [35m10908[0;39m [2m---[0;39m [2m[nio-8080-exec-1][0;39m [2m[0;39m[36mIHutDAO.class                           [0;39m [2m:[0;39m getProjectId returns:: projectId = 14496536
+[2m2025-02-20T15:56:33.812+05:30[0;39m [32m INFO[0;39m [35m10908[0;39m [2m---[0;39m [2m[nio-8080-exec-1][0;39m [2m[0;39m[36mIHutsService.class                      [0;39m [2m:[0;39m getDbProperties inputs:: dbPropertiesRequest = DbWfmPropertiesRequestDTO [keyNames=[IHUT_UPDATE_NFTREE_NODE_STATUS_URL], domainId=8], response = com.verizon.ihut.model.EndpointResponse@365de7e8
+[2m2025-02-20T15:56:33.813+05:30[0;39m [32m INFO[0;39m [35m10908[0;39m [2m---[0;39m [2m[nio-8080-exec-1][0;39m [2m[0;39m[36mIHutDAO.class                           [0;39m [2m:[0;39m getDbProperties inputs:: keyNames = [IHUT_UPDATE_NFTREE_NODE_STATUS_URL], domainId = 8
+[2m2025-02-20T15:56:33.815+05:30[0;39m [32mDEBUG[0;39m [35m10908[0;39m [2m---[0;39m [2m[nio-8080-exec-1][0;39m [2m[0;39m[36mo.s.jdbc.core.JdbcTemplate              [0;39m [2m:[0;39m Executing prepared SQL query
+[2m2025-02-20T15:56:33.815+05:30[0;39m [32mDEBUG[0;39m [35m10908[0;39m [2m---[0;39m [2m[nio-8080-exec-1][0;39m [2m[0;39m[36mo.s.jdbc.core.JdbcTemplate              [0;39m [2m:[0;39m Executing prepared SQL statement [SELECT DOMAIN_ID, KEY, VALUE FROM WFM_CORE.WFM_PROPERTIES WHERE KEY IN (?) AND DOMAIN_ID = ?]
+[2m2025-02-20T15:56:34.484+05:30[0;39m [32m INFO[0;39m [35m10908[0;39m [2m---[0;39m [2m[nio-8080-exec-1][0;39m [2m[0;39m[36mIHutDAO.class                           [0;39m [2m:[0;39m getDbProperties returns:: dbWfmProperties = []
+[2m2025-02-20T15:56:34.486+05:30[0;39m [32m INFO[0;39m [35m10908[0;39m [2m---[0;39m [2m[nio-8080-exec-1][0;39m [2m[0;39m[36mIHutsService.class                      [0;39m [2m:[0;39m getDbProperties returns:: dbWfmProperties = []
+Foe testing ihutUpdateNftreeNodeStatusUrl []
+[2m2025-02-20T15:56:34.486+05:30[0;39m [31mERROR[0;39m [35m10908[0;39m [2m---[0;39m [2m[nio-8080-exec-1][0;39m [2m[0;39m[36mIHutsService.class                      [0;39m [2m:[0;39m Error in updateNftreeNodeStatus:: 
+
+java.lang.IndexOutOfBoundsException: Index 0 out of bounds for length 0
+	at java.base/jdk.internal.util.Preconditions.outOfBounds(Preconditions.java:64) ~[na:na]
+	at java.base/jdk.internal.util.Preconditions.outOfBoundsCheckIndex(Preconditions.java:70) ~[na:na]
+	at java.base/jdk.internal.util.Preconditions.checkIndex(Preconditions.java:266) ~[na:na]
+	at java.base/java.util.Objects.checkIndex(Objects.java:359) ~[na:na]
+	at java.base/java.util.ArrayList.get(ArrayList.java:427) ~[na:na]
+	at com.verizon.ihut.service.IHutService.updateNftreeNodeStatus(IHutService.java:848) ~[main/:na]
+	at com.verizon.ihut.controller.IhutController.updateNftreeNodeStatus(IhutController.java:379) ~[main/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:255) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:188) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:926) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:831) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590) ~[tomcat-embed-core-10.1.20.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.20.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:206) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.springframework.web.filter.ServerHttpObservationFilter.doFilterInternal(ServerHttpObservationFilter.java:109) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1736) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at java.base/java.lang.Thread.run(Thread.java:833) ~[na:na]
+
+[2m2025-02-20T15:56:34.493+05:30[0;39m [32m INFO[0;39m [35m10908[0;39m [2m---[0;39m [2m[nio-8080-exec-1][0;39m [2m[0;39m[36mIHutsService.class                      [0;39m [2m:[0;39m updateNftreeNodeStatus returns:: count = 0
+[2m2025-02-20T15:56:34.493+05:30[0;39m [32m INFO[0;39m [35m10908[0;39m [2m---[0;39m [2m[nio-8080-exec-1][0;39m [2m[0;39m[36mIhutController.class                    [0;39m [2m:[0;39m POST Endpoint /updateNftreeNodeStatus response:: com.verizon.ihut.model.EndpointResponse@74f0763e
+[2m2025-02-20T15:56:34.510+05:30[0;39m [32mDEBUG[0;39m [35m10908[0;39m [2m---[0;39m [2m[nio-8080-exec-1][0;39m [2m[0;39m[36mo.s.w.s.m.m.a.HttpEntityMethodProcessor [0;39m [2m:[0;39m Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/xml;charset=UTF-8, text/xml;charset=UTF-8, application/*+xml;charset=UTF-8]
+[2m2025-02-20T15:56:34.511+05:30[0;39m [32mDEBUG[0;39m [35m10908[0;39m [2m---[0;39m [2m[nio-8080-exec-1][0;39m [2m[0;39m[36mo.s.w.s.m.m.a.HttpEntityMethodProcessor [0;39m [2m:[0;39m Writing [com.verizon.ihut.model.EndpointResponse@74f0763e]
+[2m2025-02-20T15:56:34.527+05:30[0;39m [32mDEBUG[0;39m [35m10908[0;39m [2m---[0;39m [2m[nio-8080-exec-1][0;39m [2m[0;39m[36mo.s.web.servlet.DispatcherServlet       [0;39m [2m:[0;39m Completed 200 OK

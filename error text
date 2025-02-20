@@ -9,7 +9,7 @@ public List<DbWfmPropertiesDTO> getDbProperties(List<String> keyNames, Integer d
 			MapSqlParameterSource params = new MapSqlParameterSource();
 			params.addValue("keyNames", keyNames);
 			params.addValue("domainId", domainId);
-			dbWfmProperties = wfmNamedParameterJdbcTemplate.query(sql, params, DbWfmPropertiesDTO.getMapper()); // see this dbWfmProperties return null that why nextline working return error
+			dbWfmProperties = wfmNamedParameterJdbcTemplate.query(sql, params, DbWfmPropertiesDTO.getMapper()); // can you explain this line 
 		} catch (Exception err) {
 			LOGGER.error("getDbProperties :: error::", err);
 		}

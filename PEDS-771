@@ -306,3 +306,36 @@ WHERE o.nfid = '2410ARLZ';
 - If no matching record is found in `wfm_nf.nf_ihut_order_process_data`, those columns will be `NULL` due to the **LEFT OUTER JOIN**.  
 
 Would you like help modifying this query or adding additional filters?
+
+
+
+
+public List<DbWfmPropertiesDTO> getDbProperties(List<String> keyNames, Integer domainId) {
+    List<DbWfmPropertiesDTO> dbWfmProperties = new ArrayList<>();
+    try {
+        LOGGER.info("getDbProperties inputs:: keyNames = {}, domainId = {}", keyNames, domainId);
+
+        if (keyNames == null || keyNames.isEmpty() || domainId == null) {
+            LOGGER.warn("Invalid input parameters: keyNames={}, domainId={}", keyNames, domainId);
+            return dbWfmProperties;
+        }
+
+        String sql = "SELECT DOMAIN_ID, KEY, VALUE FROM WFM_CORE.WFM_PROPERTIES " +
+                     "WHERE KEY IN (:keyNames) AND DOMAIN_ID = :domainId";
+
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("keyNames", keyNames);
+        params.addValue("domainId", domainId);
+
+        dbWfmProperties = wfmNamedParameterJdbcTemplate.query(sql, params, DbWfmPropertiesDTO.getMapper());
+
+        if (dbWfmProperties == null) {
+            dbWfmProperties = new ArrayList<>(); // Ensure non-null list
+        }
+    } catch (Exception err) {
+        LOGGER.error("getDbProperties :: error::", err);
+    }
+
+    LOGGER.info("getDbProperties returns:: dbWfmProperties = {}", dbWfmProperties);
+    return dbWfmProperties;
+}

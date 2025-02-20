@@ -68,3 +68,16 @@ public class DbWfmPropertiesDTO {
 	
 	
 }
+
+
+
+
+
+String sql = "SELECT DOMAIN_ID, `KEY`, VALUE FROM WFM_CORE.WFM_PROPERTIES "
+           + "WHERE `KEY` IN (" + String.join(",", Collections.nCopies(keyNames.size(), "?")) + ") "
+           + "AND DOMAIN_ID = ?";
+
+dbWfmProperties = jdbcTemplate.query(sql, 
+    keyNames.toArray(), 
+    DbWfmPropertiesDTO.getMapper()
+);

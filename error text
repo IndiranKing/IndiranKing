@@ -88,3 +88,17 @@ dbWfmProperties = jdbcTemplate.query(sql,
 ------
 String sql = "SELECT DOMAIN_ID, `KEY`, VALUE FROM WFM_CORE.WFM_PROPERTIES "
            + "WHERE FIND_IN_SET(`KEY`, :keyNames) AND DOMAIN_ID = :domainId";
+
+
+
+
+
+
+
+Hello Srinivasan and Viknesh,
+
+Regarding ticket no. PEDS-771, the issue has been analyzed and identified. The cancellation of NFID is not being reflected in the Status field on the project summary. This issue arises due to missing Domain ID and Value URL data. Once the missing data is inserted, the functionality will work as expected.
+
+We have informed the DB team to insert the specific values into the database.
+
+Best regards,

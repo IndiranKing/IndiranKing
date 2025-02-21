@@ -260,3 +260,36 @@ Two solutions proposed.
  
 
 Business needs to confirm on this. Once confirmed, we can attach the story created for this functionality in NTSCR dashboard and mention that over here before closing this story.
+
+
+
+
+
+
+
+
+
+
+Sure! Here’s a simplified version of your message in easy-to-understand English:  
+
+---
+
+Hi Srinivasan and Viknesh,  
+
+We discussed this issue in yesterday’s call with Mohan and Jeevitha. This is considered an enhancement because "Inside Hut" is a legacy application that was integrated into Consumption Services 6-8 months ago. As confirmed by Jeevitha, some parts of the cancellation functionality might have been missed during this integration. This issue is present in SIT, UAT, and Production.  
+
+To update the status of a cancelled NFID, we need to call the **"/updateNftreeNodeStatus" API**—this is the only API that updates an NFID's status in the code.  
+
+We have proposed two possible solutions:  
+
+1) **Add a "Cancel" button on the UI** to call this API for cancellation.  
+2) **If cancellation should only be done via the Tools section,** then we can invoke the API again at the PAM level to ensure cancellations work correctly.  
+
+We need confirmation from the business team on which approach to follow. Once they confirm, we will create a story for this functionality in the NTSCR dashboard and update the details here before closing this issue.  
+
+Best regards,  
+[Your Name]  
+
+---
+
+This version makes it clear and professional while keeping it easy to understand. Let me know if you need any further refinements!

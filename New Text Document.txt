@@ -236,3 +236,27 @@ The `status` field in the **Project Summary** is not being updated correctly for
 ---
 
 Let me know if you need any modifications!
+
+
+
+
+
+
+
+
+
+We discussed this in yesterday's call with Mohan, Jeevitha this comes as a enhancement as inside hut was a legacy application and this was integrated into consumption services 6-8 months ago as confirmed by Jeevitha, when this was done , parts of cancellation functionality might have gone missing. This issue exists in SIT,UAT and prod.
+
+To update the component status of a cancelled NFID, we are supposed to call "/updateNftreeNodeStatus" API"
+
+This is the only API where we update the status of an NFID via code.
+
+Two solutions proposed.
+
+1) Add a cancel button on UI and invoke the above URL for cancellation
+
+2) If cancellation has to be done only via Tools section, then invoke the URL again at PAM level so we have the cancellation working.
+
+ 
+
+Business needs to confirm on this. Once confirmed, we can attach the story created for this functionality in NTSCR dashboard and mention that over here before closing this story.

@@ -1,0 +1,211 @@
+// controller layer
+
+@Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @RequestMapping(value = "/updateNftreeNodeStatus", method = RequestMethod.POST)
+    @Operation(summary = "Update NfTree Node Status")
+    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Successful Result of Update NfTree Node Status"),
+	    @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {
+		    @Content(mediaType = "application/json") }), })
+    public ResponseEntity<EndpointResponse<String, String>> updateNftreeNodeStatus(
+	    @Valid @RequestBody UpdateNftreeNodeStatusRequest updateNftreeNodeStatusRequest, BindingResult bindingResult ) {
+	LOGGER.info("POST Endpoint /updateNftreeNodeStatus request:: " + updateNftreeNodeStatusRequest);
+	EndpointResponse<String, String> response = new EndpointResponse<String, String>(
+		"updateNftreeNodeStatus", "");
+	List<String> errorMessages = null;
+	try {
+	    if (bindingResult.hasErrors()) {
+		errorMessages = bindingResult.getAllErrors().stream()
+			.map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());
+		response.setTimestamp(new Date());
+		response.setStatusCode(HttpStatusCustom.VALIDATION_ERRORS.getStatusCode());
+		response.setErrors(errorMessages);
+		response.setStatusDescription(HttpStatusCustom.VALIDATION_ERRORS.getStatusDescription());
+		return new ResponseEntity<EndpointResponse<String, String>>(response, HttpStatus.OK);
+	    }
+	    iHutServce.updateNftreeNodeStatus(updateNftreeNodeStatusRequest, response);
+	} catch (Exception e) {
+	    LOGGER.error("Exception Occurred in updateNftreeNodeStatus():: ", e);
+	    response.setTimestamp(new Date());
+	    response.setStatusCode(HttpStatusCustom.METHOD_FAILED.getStatusCode());
+	    response.setStatusDescription("updateNftreeNodeStatus " + HttpStatusCustom.METHOD_FAILED.getStatusDescription());
+	    return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	LOGGER.info("POST Endpoint /updateNftreeNodeStatus response:: " + response);
+	return new ResponseEntity<>(response, HttpStatus.OK);
+    } 
+
+// Service layer
+public Integer updateNftreeNodeStatus(UpdateNftreeNodeStatusRequest updateNftreeNodeStatusRequest,
+	    EndpointResponse<String, String> response) {
+	Integer count = 0;
+	try {
+	    LOGGER.info("updateNftreeNodeStatus inputs:: updateNftreeNodeStatusRequest = "
+		    + updateNftreeNodeStatusRequest + ", response = " + response);
+	    String nfid = updateNftreeNodeStatusRequest.getNfid();
+	    Integer projectId = ihutDao.getProjectId(nfid);
+	    List<String> errors = new ArrayList<>();
+	    if (projectId == 0) {
+		response.setStatusCode(HttpStatusCustom.NO_DB_RECORDS_FOUND.getStatusCode());
+		response.setStatusDescription(HttpStatusCustom.NO_DB_RECORDS_FOUND.getStatusDescription());
+		errors.add("nfid " + nfid + " is not valid");
+	    } else {
+		DbWfmPropertiesRequestDTO dbWfmPropertiesRequestDTO = new DbWfmPropertiesRequestDTO();
+		dbWfmPropertiesRequestDTO.setDomainId(8);
+		dbWfmPropertiesRequestDTO.setKeyNames(Arrays.asList("IHUT_UPDATE_NFTREE_NODE_STATUS_URL"));
+		List<DbWfmPropertiesDTO> dbWfmPropertiesList = new ArrayList<>();
+		EndpointResponse<String, List<DbWfmPropertiesDTO>> getDbProps = new EndpointResponse<String, List<DbWfmPropertiesDTO>>(
+			"dbProperties", dbWfmPropertiesList);
+		
+		List<DbWfmPropertiesDTO> ihutUpdateNftreeNodeStatusUrl = this.getDbProperties(dbWfmPropertiesRequestDTO,
+			getDbProps);
+		
+		System.out.println("For testing ihutUpdateNftreeNodeStatusUrl "+ihutUpdateNftreeNodeStatusUrl); // code change
+		String externalUpdateComponentStatus = this.updateComponentStatus(projectId,
+			updateNftreeNodeStatusRequest, ihutUpdateNftreeNodeStatusUrl.get(0).getValue());
+
+		if (externalUpdateComponentStatus != null && !externalUpdateComponentStatus.trim().isEmpty()) {
+		    JSONParser jsonParser = new JSONParser();
+		    JSONObject updateCompStatusRespJsonObj = (JSONObject) jsonParser
+			    .parse(externalUpdateComponentStatus);
+		    JSONObject updateComponentStatusResponseData = (JSONObject) updateCompStatusRespJsonObj
+			    .get("updateComponentStatusResponse");
+		    if (updateComponentStatusResponseData.containsKey("statusCode")
+			    && "0".equalsIgnoreCase((String) updateComponentStatusResponseData.get("statusCode"))
+			    && updateComponentStatusResponseData.containsKey("nfDetails")
+			    && !((List) updateComponentStatusResponseData.get("nfDetails")).isEmpty()) {
+			count = ihutDao.updateNftreeNodeStatus(updateNftreeNodeStatusRequest);
+			if (count == 0) {
+			    response.setTimestamp(new Date());
+			    response.setStatusCode(HttpStatusCustom.FAILED_DB_UPDATE.getStatusCode());
+			    response.setStatusDescription(HttpStatusCustom.FAILED_DB_UPDATE.getStatusDescription());
+			    errors.add("Failed to update 'status' in DB");
+			} else {
+			    response.setData(updateNftreeNodeStatusRequest.getStatus());
+			    response.setStatusCode(HttpStatusCustom.SUCCESS.getStatusCode());
+			    response.setStatusDescription(HttpStatusCustom.SUCCESS.getStatusDescription());
+			}
+		    } else {
+			    response.setTimestamp(new Date());
+			    response.setStatusCode(HttpStatusCustom.INVALID_SERVICE_RESPONSE.getStatusCode());
+			    response.setStatusDescription(HttpStatusCustom.INVALID_SERVICE_RESPONSE.getStatusDescription()
+				    + " /updateComponentStatus");
+			    errors.add("Unsuccessful update of Component Status");
+		    }
+		} else {
+		    response.setTimestamp(new Date());
+		    response.setStatusCode(HttpStatusCustom.INVALID_SERVICE_RESPONSE.getStatusCode());
+		    response.setStatusDescription(HttpStatusCustom.INVALID_SERVICE_RESPONSE.getStatusDescription()
+			    + " /updateComponentStatus");
+		    errors.add("Unsuccessful update of Component Status");
+		}
+	    }
+	    response.setTimestamp(new Date());
+	    if (!errors.isEmpty())
+		response.setErrors(errors);
+	    if (errors.size() > 1) {
+		response.setStatusCode("-5");
+		response.setStatusDescription("Multiple errors found");
+	    }
+	} catch (Exception e) {
+	    LOGGER.error("Error in updateNftreeNodeStatus:: ", e);
+	    response.setTimestamp(new Date());
+	    response.setStatusCode(HttpStatusCustom.METHOD_FAILED.getStatusCode());
+	    response.setStatusDescription(
+		    "updateNftreeNodeStatus " + HttpStatusCustom.METHOD_FAILED.getStatusDescription());
+	}
+	LOGGER.info("updateNftreeNodeStatus returns:: count = " + count);
+	return count;
+    }
+
+
+public List<DbWfmPropertiesDTO> getDbProperties(@Valid DbWfmPropertiesRequestDTO dbPropertiesRequest,
+	    EndpointResponse<String, List<DbWfmPropertiesDTO>> response) {
+	List<DbWfmPropertiesDTO> dbWfmPropertiesList = new ArrayList<>();
+	try {
+	    LOGGER.info("getDbProperties inputs:: dbPropertiesRequest = " + dbPropertiesRequest + ", response = "
+		    + response);
+	    dbWfmPropertiesList = ihutDao.getDbProperties(dbPropertiesRequest.getKeyNames(),
+		    dbPropertiesRequest.getDomainId());
+	    if (dbWfmPropertiesList.size() > 0) {
+		response.setTimestamp(new Date());
+		response.setStatusCode(HttpStatusCustom.SUCCESS.getStatusCode());
+		response.setStatusDescription(HttpStatusCustom.SUCCESS.getStatusDescription());
+		response.setData(dbWfmPropertiesList);
+		System.out.println("checking"); // indira
+	    } else {
+	    	System.out.println("else part");
+		response.setTimestamp(new Date());
+		response.setStatusCode(HttpStatusCustom.NO_DB_RECORDS_FOUND.getStatusCode());
+		response.setStatusDescription(HttpStatusCustom.NO_DB_RECORDS_FOUND.getStatusDescription()
+			+ " for keyName: " + dbPropertiesRequest.getKeyNames() + " and domainId: "
+			+ dbPropertiesRequest.getDomainId());
+	    }
+
+	} catch (Exception e) {
+	    LOGGER.error("Error in getDbProperties:: ", e);
+	    response.setTimestamp(new Date());
+	    response.setStatusCode(HttpStatusCustom.METHOD_FAILED.getStatusCode());
+	    response.setStatusDescription("getDbProperties " + HttpStatusCustom.METHOD_FAILED.getStatusDescription());
+	}
+	LOGGER.info("getDbProperties returns:: dbWfmProperties = " + dbWfmPropertiesList);
+          ///  indira code   
+	
+
+	System.out.println("Heloooooooooooooo");
+	
+
+	return dbWfmPropertiesList;
+    }
+
+
+// IHutDAO layer
+
+public List<DbWfmPropertiesDTO> getDbProperties(List<String> keyNames, Integer domainId) {
+		List<DbWfmPropertiesDTO> dbWfmProperties = new ArrayList<>();
+		try {
+
+			LOGGER.info("getDbProperties inputs:: keyNames = " + keyNames + ", domainId = " + domainId);
+	
+			
+			String sql = "SELECT DOMAIN_ID, KEY, VALUE FROM WFM_CORE.WFM_PROPERTIES "
+					+ "WHERE KEY IN (:keyNames) AND DOMAIN_ID = :domainId";
+			
+			MapSqlParameterSource params = new MapSqlParameterSource();
+			params.addValue("keyNames", keyNames);
+			params.addValue("domainId", domainId);
+			dbWfmProperties = wfmNamedParameterJdbcTemplate.query(sql, params, DbWfmPropertiesDTO.getMapper());
+			
+		} catch (Exception err) {
+			LOGGER.error("getDbProperties :: error::", err);
+		}
+		LOGGER.info("getDbProperties returns:: dbWfmProperties = " + dbWfmProperties);
+		System.out.println(dbWfmProperties);
+		return dbWfmProperties;
+	}
+
+public Integer updateNftreeNodeStatus(UpdateNftreeNodeStatusRequest updateNftreeNodeStatusRequest) {
+	    Integer count = 0;
+	    try {
+	        LOGGER.info("updateNftreeNodeStatus inputs:: updateNftreeNodeStatusRequest = " + updateNftreeNodeStatusRequest);
+	        String sql = "UPDATE WFM_NF.NF_IHUT_ORDER SET STATUS = :status WHERE NFID = :nfid";
+	        MapSqlParameterSource params = new MapSqlParameterSource();
+	        params.addValue("nfid", updateNftreeNodeStatusRequest.getNfid());
+	        params.addValue("status", updateNftreeNodeStatusRequest.getStatus());
+	        count = wfmNamedParameterJdbcTemplate.update(sql, params);
+	    } catch (Exception err) {
+	        LOGGER.error("updateNftreeNodeStatus :: error::", err);
+	    }
+	    LOGGER.info("updateNftreeNodeStatus returns:: count = " + count);
+	    return count;
+	}
+
+
+
+I hit this url in postman testing tool "http://localhost:8080/insidehut-service/updateNftreeNodeStatus" Post method 
+{
+            "nfid": "2401AOFT",
+            "status": "completed"
+}
+
+can you explain the flow of code flow will work 

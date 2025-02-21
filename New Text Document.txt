@@ -1,1 +1,238 @@
-this is one Off
+Sure! Let's go through the flow of how your code handles the **POST** request to `http://localhost:8080/insidehut-service/updateNftreeNodeStatus` with the request body:
+
+```json
+{
+    "nfid": "2401AOFT",
+    "status": "completed"
+}
+```
+
+---
+
+### **Step-by-step Execution Flow:**
+1. **Client Sends a POST Request**
+   - You send a **POST** request to `http://localhost:8080/insidehut-service/updateNftreeNodeStatus` with the request payload.
+
+---
+
+### **1. Controller Layer (`updateNftreeNodeStatus` method in Controller)**
+
+2. The request is received by the controller method:
+
+   ```java
+   public ResponseEntity<EndpointResponse<String, String>> updateNftreeNodeStatus(
+       @Valid @RequestBody UpdateNftreeNodeStatusRequest updateNftreeNodeStatusRequest, 
+       BindingResult bindingResult)
+   ```
+   
+3. The controller logs the incoming request:
+   ```java
+   LOGGER.info("POST Endpoint /updateNftreeNodeStatus request:: " + updateNftreeNodeStatusRequest);
+   ```
+   
+4. If there are validation errors (`bindingResult.hasErrors()`), it returns validation errors as a response.
+
+5. If the request is valid, it calls the **Service Layer** method:
+
+   ```java
+   iHutServce.updateNftreeNodeStatus(updateNftreeNodeStatusRequest, response);
+   ```
+
+---
+
+### **2. Service Layer (`updateNftreeNodeStatus` method in `iHutService`)**
+
+6. The `updateNftreeNodeStatus` method in the **Service Layer** is called.
+
+   ```java
+   public Integer updateNftreeNodeStatus(UpdateNftreeNodeStatusRequest updateNftreeNodeStatusRequest,
+    EndpointResponse<String, String> response)
+   ```
+   
+7. Logs the request:
+   ```java
+   LOGGER.info("updateNftreeNodeStatus inputs:: updateNftreeNodeStatusRequest = " + updateNftreeNodeStatusRequest);
+   ```
+   
+8. Extracts the `nfid` from the request and fetches `projectId` from **DAO Layer**:
+   ```java
+   Integer projectId = ihutDao.getProjectId(nfid);
+   ```
+
+9. If `projectId` is **0** (record not found), it returns an error response.
+
+10. Otherwise, it fetches **external service URL** from the database:
+    ```java
+    dbWfmPropertiesRequestDTO.setDomainId(8);
+    dbWfmPropertiesRequestDTO.setKeyNames(Arrays.asList("IHUT_UPDATE_NFTREE_NODE_STATUS_URL"));
+    
+    List<DbWfmPropertiesDTO> ihutUpdateNftreeNodeStatusUrl = this.getDbProperties(dbWfmPropertiesRequestDTO, getDbProps);
+    ```
+   
+11. Calls **`getDbProperties`** method to fetch the external URL from `WFM_PROPERTIES` table.
+
+12. Uses the fetched URL to make an external API call (`updateComponentStatus` method).
+
+13. If the API response is valid and contains `"statusCode": "0"`, it updates the `STATUS` field in the database via **DAO Layer**.
+
+14. Calls the **DAO Layer** method to update the database:
+    ```java
+    count = ihutDao.updateNftreeNodeStatus(updateNftreeNodeStatusRequest);
+    ```
+
+15. If the update is successful (`count > 0`), it returns a success response.
+
+16. If the update fails, it returns an error response.
+
+---
+
+### **3. DAO Layer (`updateNftreeNodeStatus` and `getDbProperties`)**
+
+#### **Fetching External API URL from Database**
+17. The **DAO Layer** fetches the required URL from the `WFM_PROPERTIES` table:
+
+    ```java
+    public List<DbWfmPropertiesDTO> getDbProperties(List<String> keyNames, Integer domainId)
+    ```
+   
+18. Runs the query:
+
+    ```sql
+    SELECT DOMAIN_ID, KEY, VALUE FROM WFM_CORE.WFM_PROPERTIES 
+    WHERE KEY IN (:keyNames) AND DOMAIN_ID = :domainId
+    ```
+   
+19. Returns the fetched URL to the **Service Layer**.
+
+#### **Updating `STATUS` Field in Database**
+20. If the **external API call is successful**, the **DAO Layer** updates the `STATUS` field in the database:
+
+    ```java
+    public Integer updateNftreeNodeStatus(UpdateNftreeNodeStatusRequest updateNftreeNodeStatusRequest)
+    ```
+   
+21. Executes the SQL update statement:
+
+    ```sql
+    UPDATE WFM_NF.NF_IHUT_ORDER SET STATUS = :status WHERE NFID = :nfid
+    ```
+   
+22. If the update is successful (`count > 0`), it returns `count = 1`.
+
+---
+
+### **4. Controller Returns Response**
+23. The **Service Layer** returns the response to the **Controller**.
+
+24. The **Controller** returns an HTTP response based on the result:
+
+    - **Success Response (200 OK)**:
+      ```json
+      {
+          "operation": "updateNftreeNodeStatus",
+          "data": "completed",
+          "statusCode": "0",
+          "statusDescription": "Success"
+      }
+      ```
+      
+    - **Failure Response (500 Internal Server Error)**:
+      ```json
+      {
+          "operation": "updateNftreeNodeStatus",
+          "statusCode": "500",
+          "statusDescription": "Internal Server Error"
+      }
+      ```
+
+---
+
+### **Summary of Execution Flow**
+| Step | Layer | Operation |
+|------|-------|-----------|
+| 1 | Client | Sends **POST** request with `nfid` and `status` |
+| 2 | Controller | Validates request and calls Service Layer |
+| 3 | Service Layer | Fetches `projectId` for `nfid` |
+| 4 | Service Layer | Fetches external API URL from `WFM_PROPERTIES` table |
+| 5 | Service Layer | Calls external API (`updateComponentStatus`) |
+| 6 | Service Layer | If API is successful, updates `STATUS` field in DB |
+| 7 | DAO Layer | Runs **SQL UPDATE** query on `WFM_NF.NF_IHUT_ORDER` |
+| 8 | Service Layer | Returns update result to Controller |
+| 9 | Controller | Sends response back to the client |
+
+---
+
+### **Final Thoughts**
+- **If everything works fine**, the `STATUS` field in the `WFM_NF.NF_IHUT_ORDER` table is updated to `"completed"` for the given `nfid`.
+- **If the API call fails** or **`projectId` is invalid**, an appropriate error response is returned.
+
+Let me know if you need any clarifications!
+
+
+
+
+Summary of Execution Flow
+Step	Layer	Operation
+1	Client	Sends POST request with nfid and status
+2	Controller	Validates request and calls Service Layer
+3	Service Layer	Fetches projectId for nfid
+4	Service Layer	Fetches external API URL from WFM_PROPERTIES table
+5	Service Layer	Calls external API (updateComponentStatus)
+6	Service Layer	If API is successful, updates STATUS field in DB
+7	DAO Layer	Runs SQL UPDATE query on WFM_NF.NF_IHUT_ORDER
+8	Service Layer	Returns update result to Controller
+9	Controller	Sends response back to the client
+
+
+
+
+
+
+documentation 
+
+
+
+Here’s a structured documentation for the issue:  
+---
+
+# **Issue Documentation: NFID Not Reflected in Status Field on Project Summary**  
+
+## **JIRA Ticket**  
+[Provide the JIRA ticket number or link if available]  
+
+## **Issue Summary**  
+The `status` field in the **Project Summary** is not being updated correctly for the given **NFID**.  
+
+## **Root Cause Analysis**  
+
+- The SQL query executed to fetch the required property values from the database is:  
+  ```sql
+  SELECT DOMAIN_ID, KEY, VALUE FROM WFM_CORE.WFM_PROPERTIES 
+  WHERE KEY IN (:keyNames) AND DOMAIN_ID = :domainId;
+  ```
+- The query is failing because there are no relevant records in the **WFM_CORE.WFM_PROPERTIES** table.  
+- Since the required configuration values are missing, the system is unable to fetch the necessary data for updating the **status**.  
+
+## **Actions Taken**  
+
+1. **DB Investigation:**  
+   - Checked the **WFM_PROPERTIES** table and confirmed that the expected records are missing.  
+   
+2. **DB Team Notified:**  
+   - The **DB team** has been informed to insert the required records into the **WFM_PROPERTIES** table.  
+
+3. **Temporary Workaround (if any):**  
+   - [Mention if any alternative approach is used until the DB team updates the table]  
+
+## **Next Steps**  
+
+- **DB team to insert required values** in the **WFM_PROPERTIES** table.  
+- **Retest the functionality** after the DB update.  
+- **Monitor logs and confirm** if the NFID status is being correctly reflected in the Project Summary.  
+
+## **Additional Notes**  
+- [Any logs, screenshots, or references that could help in debugging]  
+
+---
+
+Let me know if you need any modifications!

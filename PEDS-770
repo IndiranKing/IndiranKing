@@ -1,1 +1,138 @@
-h
+CARRYOVER (2) - iEN VPM - UTPMO - Missing TIDs on UT PMO Tracker
+
+Details
+Type:Icon: Bug Bug
+Resolution:Unresolved
+Labels:None
+Priority Level:High
+Environment - Test Phase:Production
+Impacted Applications(VAST):(F86V) - WFM-NE - NSIT - Moorthi Subbarayan
+Story Points:1
+Sprint:Cops T3 Sprint 10, Cops T3 Sprint 11, Cops T3 Sprint 12, Cops T3 Sprint 13, Cops T3 Sprint 14, Cops T3 Sprint 15, Cops T3 Sprint 16, Cops T3 Sprint 17, Cops T3 Sprint 18, Cops T3 Sprint 19, Cops T3 Sprint 20
+AYS Ticket:INC013167415
+Description
+Missing TIDs on UT PMO Tracker (required to trigger NEAT Completions)
+
+There are 2 recent Photonic NEATs missing from PMO tracker
+BRSPWVEN-0110202A
+HRFYWVAS-0110202A
+
+Attachments
+
+Options
+Drop files to attach, or browse.
+Project Documents
+Activity
+All
+Comments
+Work Log
+History
+Activity
+Transitions
+Transitions
+
+Newest first
+You can now pin up to five comments to highlight important information. Pinned comments will appear above all other comments, so they're easy to find.
+
+
+Got it
+Learn more about pinned comments
+ Collapse comment: Vegi, Santhosh Kumar added a comment - 07/Mar/25 5:41 PM
+
+Vegi, Santhosh Kumar added a comment - 2 days ago
+Reference : INC013167415 - fixed by VPM team Ashwin Borakhadikar.
+
+Now we see values for Actual UT Photonic NEATs.   
+
+
+Pin
+
+ Collapse comment: Haarish, Manjula added a comment - 16/Dec/24 2:55 PM
+
+Haarish, Manjula added a comment - 16/Dec/24 2:55 PM
+Vegi, Santhosh Kumar / Salma, Shaik / S, Maheshkumar 
+
+bug is open for more than 2 months ,with no action taken so far, can someone, please provide updates on the status.
+
+
+Pin
+
+ Collapse comment: S, Maheshkumar added a comment - 17/Nov/24 8:04 AM
+
+S, Maheshkumar added a comment - 17/Nov/24 8:04 AM
+Salma, Shaik
+Nov 15, 2024, 1:44 PM (2 days ago)
+to Senthil, Viknesh, Santhosh, Kaviarasan, S, me, Mooventhiran, Saravanakumar, M, D, R
+
+Hi Senthil,
+
+Actually PEDS-641 is not the only bug that came directly from the user,
+I'm putting the list of bugs that needs to be taken care of by tier-2 for your reference.
+https://onejira.verizon.com/browse/PEDS-771
+https://onejira.verizon.com/browse/PEDS-641
+https://onejira.verizon.com/browse/PEDS-597
+https://onejira.verizon.com/browse/PEDS-743
+
+Since these need to be evaluated by tier-2 first, I'm redirecting these tickets to @Santhosh Kumar Vegi . Once he's done with his analysis, if he still needs tier-3 support, I will be available for a call or slack communication.
+
+@Santhosh Kumar Vegi Kindly take a look at these tickets.
+
+Thanks & Regards,
+Shaik Salma
+
+
+Pin
+
+ Collapse comment: Maron, Susan S added a comment - 15/Oct/24 4:24 PM
+
+Maron, Susan S added a comment - 15/Oct/24 4:24 PM
+Relates to AYS ticket INC013167415
+
+
+Pin
+
+Add a comment...
+Pro tip: press m to comment
+People
+Assignee:	
+swriin
+ S, Indiran 
+Reporter:	
+V311754
+ Maron, Susan S 
+Requestor:	
+Mustica, Sean P
+ Mustica, Sean P
+Votes:	0 Vote for this issue 
+Watchers:	4 
+Start watching this issue 
+Dates
+Created:	15/Oct/24 3:30 PM
+Updated:	2 days ago 5:41 PM
+Potential Duplicates
+New Bug PEDS-1221 INC012747792-Receiving an Admin Error when Creating iEN UT Cases - Nautilus not Providing data
+New Bug PEDS-1274 Secondary GL ID missing automated quotes
+In Progress Bug PEDS-1263 Blank audit details for router fields in SPM tracker
+WITHDRAWN Bug PEDS-1217 Under TRT Events Milestones, column for the name of the "site" missing
+ Search in current project only
+ Search items of this type only
+ Search items of these components only
+Agile
+Future Sprint:	Cops T3 Sprint 20 ends 07/Mar/25
+Completed Sprints:	Cops T3 Sprint 10 ended 21/Oct/24
+Cops T3 Sprint 11 ended 04/Nov/24
+Cops T3 Sprint 12 ended 14/Nov/24
+Cops T3 Sprint 13 ended 27/Nov/24
+Cops T3 Sprint 14 ended 17/Dec/24
+Cops T3 Sprint 15 ended 06/Jan/25
+Cops T3 Sprint 16 ended 13/Jan/25
+Cops T3 Sprint 17 ended 28/Jan/25
+Cops T3 Sprint 18 ended 12/Feb/25
+Cops T3 Sprint 19 ended 27/Feb/25
+ Find on a board
+Packages
+Version	Package
+
+
+
+this is my second jira ticket how to resolve the issue 

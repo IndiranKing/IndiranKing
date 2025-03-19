@@ -1,0 +1,57 @@
+jira ticket no : 578
+name : Nfids stuck at pending cancel status - IEN
+assigne : Indiran.s
+task type : Bug
+description : Getting IEN AYS tickets for nfids stuck at pending cancel status. Upon analysis , we noticed its getting stucked at PAM service signal.
+
+https://coe-web-uat.ebiz.verizon.com/wfmservices/rest/nf/nfids/2408AKNQ/cancel
+https://coe-services-uat-east.ebiz.verizon.com/wfm-pam-services/pam/initiateProcess/CancelNFIDProcess
+
+INC012885325 - IEN| 2307CIWA.1 NGM-MPLS-Add UNI Circuit
+
+work
+Had a call with Shashank today and gather the info about the issue and it is only appearing in the production environment. Got some documents from him regarding how to cancel, create nfid. We'll go through the documents and  try to reproduce the issue in UAT environment.
+Requested tier 2 team( Dhanushkodi G ) for production logs to analyze the issue. As the issue is not reproducible in UAT environment.
+After going through the sys-infra code we have not find any clue and thought of running the sysinfra code locally with the payload. Got the payload from Shashank through one nfid while checking the code flow in canvas. Tried to run the sys infra code locally but ended up with few build errors. Waiting for Agrahari, Shashank's time to fix the build errors and run the sysinfra code locally.
+I tried running the app in local and it is running fine, 
+
+sub-task of PEDS- 578 jira ticket: PEDS: 716
+task type : Analysis
+name : Analysis of the flow in Prod and narrow down the root cause
+Assignee: Agrahari, Shashank
+task completed: Agrahari, Shashank comment ->It was working fine as expected. Thanks! 
+
+In UAT Canvas i tried to check create some NFID and cancel for checking its working fine we expected 
+we have two way to cancel NFID 
+1 -> Cancel NFID -> Cancel now (cannot be undone)
+2 -> Cancel NFID -> Cancel in 1 hour (undo function available)
+when i tested both methods are working fine
+and this is my created and canceled NFID
+2503AIWA  - Test with 1st method [11/03/25]
+2503AIZJ    - Test with 2nd method [11/03/25]
+2503AJDU  - Test with 1st method [11/03/25]
+2503AJMR - Test with 1st method  [12/03/25]
+2503AJRT -  Test with 2nd method [12/03/25]
+
+but, Sharmila Mani  said "the issue still happen in some times"
+
+so drop a mail to Shanshank Agrahari
+Hi Shanshank Agrahari,
+
+While we are checking the above said Defect, I tested Nfids stuck at pending cancel status and the corresponding AYS ticket [ INC012885325 ] it's cancellation working fine. 
+
+Please confirm, so that we can move the defect to DONE status in JIRA
+
+reply from Shanshank Agrahari
+Hi @Indiran S ,
+
+As discussed over the slack, it was an intermittent issue & Now I am not seeing any gap with the functionality of the NFID Cancellation &, working fine as expected. Pls go ahead mark the story as Done. If you've added any code changes or config changes then do let me know. 
+
+Can you pls check with the reporter as well before closing ? 
+
+Thanks & Regards,
+Shashank Agrahari 
+
+
+
+create a documention for closing this jira ticket no : 578 

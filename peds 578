@@ -54,4 +54,72 @@ Shashank Agrahari
 
 
 
-create a documention for closing this jira ticket no : 578 
+create a documention for closing this jira ticket no : 578
+
+
+
+
+
+
+
+
+
+
+# **JIRA Ticket Closure Documentation**  
+## **JIRA Ticket No: 578**  
+### **Title: NFIDs Stuck at Pending Cancel Status - IEN**  
+**Assignee:** Indiran S.  
+**Task Type:** Bug  
+**Description:**  
+IEN AYS tickets for NFIDs were stuck at "Pending Cancel" status. Analysis indicated the issue was occurring at the PAM service signal.  
+
+---
+
+## **Work Summary**  
+
+1. **Issue Identification & Initial Analysis:**  
+   - The issue was observed in the **Production environment** but could not be reproduced in **UAT**.  
+   - Consulted **Shashank Agrahari** to gather information on NFID cancellation and creation.  
+   - Obtained relevant documentation on NFID workflows.  
+
+2. **Investigation & Debugging:**  
+   - Requested **Tier 2 team (Dhanushkodi G)** for **Production logs** to analyze the issue.  
+   - Analyzed the **sys-infra code** but found no immediate clues.  
+   - Attempted to run **sys-infra code locally** using a payload received from Shashank via NFID analysis in Canvas.  
+   - Faced **build errors** while running the sys-infra code locally and sought assistance from **Agrahari and Shashank** to resolve them.  
+
+3. **Testing in UAT Environment:**  
+   - Validated the **NFID creation and cancellation process** using two available cancellation methods:  
+     1. **Cancel Now** (Immediate cancellation, irreversible).  
+     2. **Cancel in 1 Hour** (Cancelable within the first hour).  
+   - Created and canceled NFIDs in **UAT Canvas**, and both methods worked fine.  
+
+   **Test Cases in UAT:**  
+   | NFID | Cancellation Method | Date |  
+   |------|--------------------|------|  
+   | 2503AIWA | Cancel Now | 11/03/25 |  
+   | 2503AIZJ | Cancel in 1 Hour | 11/03/25 |  
+   | 2503AJDU | Cancel Now | 11/03/25 |  
+   | 2503AJMR | Cancel Now | 12/03/25 |  
+   | 2503AJRT | Cancel in 1 Hour | 12/03/25 |  
+
+4. **Final Confirmation & Closure:**  
+   - Sharmila Mani mentioned that the issue **still occurs intermittently** in Production.  
+   - Communicated findings to **Shashank Agrahari** via email.  
+   - Shashank Agrahari confirmed on Slack that it is an **intermittent issue**, and currently, NFID cancellation is **working fine as expected**.  
+   - Verified with the **reporter** before closing the ticket.  
+
+---
+
+## **Resolution & Closure Status**  
+- **Root Cause:** Intermittent issue in Production, not reproducible in UAT.  
+- **Final Confirmation:** No functional gaps found in NFID cancellation.  
+- **Next Steps:**  
+  - No code or configuration changes were made.  
+  - Issue monitored; if it recurs, additional logs will be collected for deeper analysis.  
+- **Ticket Status:** **DONE**  
+
+---
+
+**Prepared By:** Indiran S.  
+**Date:** 12/03/2025

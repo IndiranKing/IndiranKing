@@ -1,125 +1,201 @@
-jira ticket no : 578
-name : Nfids stuck at pending cancel status - IEN
-assigne : Indiran.s
-task type : Bug
-description : Getting IEN AYS tickets for nfids stuck at pending cancel status. Upon analysis , we noticed its getting stucked at PAM service signal.
-
-https://coe-web-uat.ebiz.verizon.com/wfmservices/rest/nf/nfids/2408AKNQ/cancel
-https://coe-services-uat-east.ebiz.verizon.com/wfm-pam-services/pam/initiateProcess/CancelNFIDProcess
-
-INC012885325 - IEN| 2307CIWA.1 NGM-MPLS-Add UNI Circuit
-
-work
-Had a call with Shashank today and gather the info about the issue and it is only appearing in the production environment. Got some documents from him regarding how to cancel, create nfid. We'll go through the documents and  try to reproduce the issue in UAT environment.
-Requested tier 2 team( Dhanushkodi G ) for production logs to analyze the issue. As the issue is not reproducible in UAT environment.
-After going through the sys-infra code we have not find any clue and thought of running the sysinfra code locally with the payload. Got the payload from Shashank through one nfid while checking the code flow in canvas. Tried to run the sys infra code locally but ended up with few build errors. Waiting for Agrahari, Shashank's time to fix the build errors and run the sysinfra code locally.
-I tried running the app in local and it is running fine, 
-
-sub-task of PEDS- 578 jira ticket: PEDS: 716
-task type : Analysis
-name : Analysis of the flow in Prod and narrow down the root cause
-Assignee: Agrahari, Shashank
-task completed: Agrahari, Shashank comment ->It was working fine as expected. Thanks! 
-
-In UAT Canvas i tried to check create some NFID and cancel for checking its working fine we expected 
-we have two way to cancel NFID 
-1 -> Cancel NFID -> Cancel now (cannot be undone)
-2 -> Cancel NFID -> Cancel in 1 hour (undo function available)
-when i tested both methods are working fine
-and this is my created and canceled NFID
-2503AIWA  - Test with 1st method [11/03/25]
-2503AIZJ    - Test with 2nd method [11/03/25]
-2503AJDU  - Test with 1st method [11/03/25]
-2503AJMR - Test with 1st method  [12/03/25]
-2503AJRT -  Test with 2nd method [12/03/25]
-
-but, Sharmila Mani  said "the issue still happen in some times"
-
-so drop a mail to Shanshank Agrahari
-Hi Shanshank Agrahari,
-
-While we are checking the above said Defect, I tested Nfids stuck at pending cancel status and the corresponding AYS ticket [ INC012885325 ] it's cancellation working fine. 
-
-Please confirm, so that we can move the defect to DONE status in JIRA
-
-reply from Shanshank Agrahari
-Hi @Indiran S ,
-
-As discussed over the slack, it was an intermittent issue & Now I am not seeing any gap with the functionality of the NFID Cancellation &, working fine as expected. Pls go ahead mark the story as Done. If you've added any code changes or config changes then do let me know. 
-
-Can you pls check with the reporter as well before closing ? 
-
-Thanks & Regards,
-Shashank Agrahari 
-
-
-
-create a documention for closing this jira ticket no : 578
-
-
-
-
-
-
-
-
-
-
-# **JIRA Ticket Closure Documentation**  
-## **JIRA Ticket No: 578**  
-### **Title: NFIDs Stuck at Pending Cancel Status - IEN**  
-**Assignee:** Indiran S.  
-**Task Type:** Bug  
-**Description:**  
-IEN AYS tickets for NFIDs were stuck at "Pending Cancel" status. Analysis indicated the issue was occurring at the PAM service signal.  
-
----
-
-## **Work Summary**  
-
-1. **Issue Identification & Initial Analysis:**  
-   - The issue was observed in the **Production environment** but could not be reproduced in **UAT**.  
-   - Consulted **Shashank Agrahari** to gather information on NFID cancellation and creation.  
-   - Obtained relevant documentation on NFID workflows.  
-
-2. **Investigation & Debugging:**  
-   - Requested **Tier 2 team (Dhanushkodi G)** for **Production logs** to analyze the issue.  
-   - Analyzed the **sys-infra code** but found no immediate clues.  
-   - Attempted to run **sys-infra code locally** using a payload received from Shashank via NFID analysis in Canvas.  
-   - Faced **build errors** while running the sys-infra code locally and sought assistance from **Agrahari and Shashank** to resolve them.  
-
-3. **Testing in UAT Environment:**  
-   - Validated the **NFID creation and cancellation process** using two available cancellation methods:  
-     1. **Cancel Now** (Immediate cancellation, irreversible).  
-     2. **Cancel in 1 Hour** (Cancelable within the first hour).  
-   - Created and canceled NFIDs in **UAT Canvas**, and both methods worked fine.  
-
-   **Test Cases in UAT:**  
-   | NFID | Cancellation Method | Date |  
-   |------|--------------------|------|  
-   | 2503AIWA | Cancel Now | 11/03/25 |  
-   | 2503AIZJ | Cancel in 1 Hour | 11/03/25 |  
-   | 2503AJDU | Cancel Now | 11/03/25 |  
-   | 2503AJMR | Cancel Now | 12/03/25 |  
-   | 2503AJRT | Cancel in 1 Hour | 12/03/25 |  
-
-4. **Final Confirmation & Closure:**  
-   - Sharmila Mani mentioned that the issue **still occurs intermittently** in Production.  
-   - Communicated findings to **Shashank Agrahari** via email.  
-   - Shashank Agrahari confirmed on Slack that it is an **intermittent issue**, and currently, NFID cancellation is **working fine as expected**.  
-   - Verified with the **reporter** before closing the ticket.  
-
----
-
-## **Resolution & Closure Status**  
-- **Root Cause:** Intermittent issue in Production, not reproducible in UAT.  
-- **Final Confirmation:** No functional gaps found in NFID cancellation.  
-- **Next Steps:**  
-  - No code or configuration changes were made.  
-  - Issue monitored; if it recurs, additional logs will be collected for deeper analysis.  
-- **Ticket Status:** **DONE**  
-
----
-
-**Prepared By:** Indiran S.  
-**Date:** 12/03/2025
+npm warn cleanup Failed to remove some directories [
+npm warn cleanup   [
+npm warn cleanup     '\\\\?\\C:\\Users\\bbwusa\\BeTasks\\ECHO\\dev\\outage-management\\node_modules\\@cspotcode',
+npm warn cleanup     [Error: EPERM: operation not permitted, rmdir 'C:\Users\bbwusa\BeTasks\ECHO\dev\outage-management\node_modules\@cspotcode\source-map-support\node_modules\@jridgewell\trace-mapping\dist'] {
+npm warn cleanup       errno: -4048,
+npm warn cleanup       code: 'EPERM',
+npm warn cleanup       syscall: 'rmdir',
+npm warn cleanup       path: 'C:\\Users\\bbwusa\\BeTasks\\ECHO\\dev\\outage-management\\node_modules\\@cspotcode\\source-map-support\\node_modules\\@jridgewell\\trace-mapping\\dist'
+npm warn cleanup     }
+npm warn cleanup   ],
+npm warn cleanup   [
+npm warn cleanup     '\\\\?\\C:\\Users\\bbwusa\\BeTasks\\ECHO\\dev\\outage-management\\node_modules\\echo-healthcheck\\node_modules',
+npm warn cleanup     [Error: EPERM: operation not permitted, rmdir 'C:\Users\bbwusa\BeTasks\ECHO\dev\outage-management\node_modules\echo-healthcheck\node_modules\@nestjs\terminus'] {
+npm warn cleanup       errno: -4048,
+npm warn cleanup       code: 'EPERM',
+npm warn cleanup       syscall: 'rmdir',
+npm warn cleanup       path: 'C:\\Users\\bbwusa\\BeTasks\\ECHO\\dev\\outage-management\\node_modules\\echo-healthcheck\\node_modules\\@nestjs\\terminus'
+npm warn cleanup     }
+npm warn cleanup   ],
+npm warn cleanup   [
+npm warn cleanup     '\\\\?\\C:\\Users\\bbwusa\\BeTasks\\ECHO\\dev\\outage-management\\node_modules\\@newrelic',
+npm warn cleanup     [Error: EPERM: operation not permitted, rmdir 'C:\Users\bbwusa\BeTasks\ECHO\dev\outage-management\node_modules\@newrelic\security-agent'] {
+npm warn cleanup       errno: -4048,
+npm warn cleanup       code: 'EPERM',
+npm warn cleanup       syscall: 'rmdir',
+npm warn cleanup       path: 'C:\\Users\\bbwusa\\BeTasks\\ECHO\\dev\\outage-management\\node_modules\\@newrelic\\security-agent'     
+npm warn cleanup     }
+npm warn cleanup   ]
+npm warn cleanup ]
+npm error code 1
+npm error path C:\Users\bbwusa\BeTasks\ECHO\dev\outage-management\node_modules\pulsar-client
+npm error command failed
+npm error command C:\windows\system32\cmd.exe /d /s /c node-pre-gyp install --fallback-to-build
+npm error Failed to execute 'C:\Program Files\nodejs\node.exe C:\Program Files\nodejs\node_modules\npm\node_modules\node-gyp\bin\node-gyp.js configure --fallback-to-build --module=C:\Users\bbwusa\BeTasks\ECHO\dev\outage-management\node_modules\pulsar-client\build\Release\libpulsar.node --module_name=libpulsar --module_path=C:\Users\bbwusa\BeTasks\ECHO\dev\outage-management\node_modules\pulsar-client\build\Release --napi_version=9 --node_abi_napi=napi --napi_build_version=0 --node_napi_label=node-v127' (1)
+npm error node-pre-gyp info it worked if it ends with ok
+npm error node-pre-gyp info using node-pre-gyp@0.15.0
+npm error node-pre-gyp info using node@22.12.0 | win32 | x64
+npm error node-pre-gyp WARN Using request for node-pre-gyp https download
+npm error node-pre-gyp info check checked for "C:\Users\bbwusa\BeTasks\ECHO\dev\outage-management\node_modules\pulsar-client\build\Release\libpulsar.node" (not found)
+npm error node-pre-gyp http GET https://pulsar.apache.org/docs/en/client-libraries-cpp/libpulsar-v1.3.0-node-v127-win32-x64.tar.gz   
+npm error node-pre-gyp WARN Pre-built binaries not installable for pulsar-client@1.3.0 and node@22.12.0 (node-v127 ABI, unknown) (falling back to source compile with node-gyp)
+npm error node-pre-gyp WARN Hit error read ECONNRESET
+npm error gyp info it worked if it ends with ok
+npm error gyp info using node-gyp@10.2.0
+npm error gyp info using node@22.12.0 | win32 | x64
+npm error gyp info ok
+npm error gyp info it worked if it ends with ok
+npm error gyp info using node-gyp@10.2.0
+npm error gyp info using node@22.12.0 | win32 | x64
+npm error gyp ERR! find Python
+npm error gyp ERR! find Python Python is not set from command line or npm configuration
+npm error gyp ERR! find Python Python is not set from environment variable PYTHON
+npm error gyp ERR! find Python checking if the py launcher can be used to find Python 3
+npm error gyp ERR! find Python - executable path is ""
+npm error gyp ERR! find Python - "" could not be run
+npm error gyp ERR! find Python checking if "python3" can be used
+npm error gyp ERR! find Python - executable path is ""
+npm error gyp ERR! find Python - "" could not be run
+npm error gyp ERR! find Python checking if "python" can be used
+npm error gyp ERR! find Python - executable path is ""
+npm error gyp ERR! find Python - "" could not be run
+npm error gyp ERR! find Python checking if Python is C:\Users\bbwusa\AppData\Local\Programs\Python\Python311\python.exe
+npm error gyp ERR! find Python - version is ""
+npm error gyp ERR! find Python - version is  - should be >=3.6.0
+npm error gyp ERR! find Python - THIS VERSION OF PYTHON IS NOT SUPPORTED
+npm error gyp ERR! find Python - "C:\Users\bbwusa\AppData\Local\Programs\Python\Python311\python.exe" could not be run
+npm error gyp ERR! find Python checking if Python is C:\Program Files\Python311\python.exe
+npm error gyp ERR! find Python - version is ""
+npm error gyp ERR! find Python - version is  - should be >=3.6.0
+npm error gyp ERR! find Python - THIS VERSION OF PYTHON IS NOT SUPPORTED
+npm error gyp ERR! find Python - "C:\Program Files\Python311\python.exe" could not be run
+npm error gyp ERR! find Python checking if Python is C:\Users\bbwusa\AppData\Local\Programs\Python\Python311-32\python.exe
+npm error gyp ERR! find Python - version is ""
+npm error gyp ERR! find Python - version is  - should be >=3.6.0
+npm error gyp ERR! find Python - THIS VERSION OF PYTHON IS NOT SUPPORTED
+npm error gyp ERR! find Python - "C:\Users\bbwusa\AppData\Local\Programs\Python\Python311-32\python.exe" could not be run
+npm error gyp ERR! find Python checking if Python is C:\Program Files\Python311-32\python.exe
+npm error gyp ERR! find Python - version is ""
+npm error gyp ERR! find Python - version is  - should be >=3.6.0
+npm error gyp ERR! find Python - THIS VERSION OF PYTHON IS NOT SUPPORTED
+npm error gyp ERR! find Python - "C:\Program Files\Python311-32\python.exe" could not be run
+npm error gyp ERR! find Python checking if Python is C:\Program Files (x86)\Python311-32\python.exe
+npm error gyp ERR! find Python - version is ""
+npm error gyp ERR! find Python - version is  - should be >=3.6.0
+npm error gyp ERR! find Python - THIS VERSION OF PYTHON IS NOT SUPPORTED
+npm error gyp ERR! find Python - "C:\Program Files (x86)\Python311-32\python.exe" could not be run
+npm error gyp ERR! find Python checking if Python is C:\Users\bbwusa\AppData\Local\Programs\Python\Python310\python.exe
+npm error gyp ERR! find Python - version is ""
+npm error gyp ERR! find Python - version is  - should be >=3.6.0
+npm error gyp ERR! find Python - THIS VERSION OF PYTHON IS NOT SUPPORTED
+npm error gyp ERR! find Python - "C:\Users\bbwusa\AppData\Local\Programs\Python\Python310\python.exe" could not be run
+npm error gyp ERR! find Python checking if Python is C:\Program Files\Python310\python.exe
+npm error gyp ERR! find Python - version is ""
+npm error gyp ERR! find Python - version is  - should be >=3.6.0
+npm error gyp ERR! find Python - THIS VERSION OF PYTHON IS NOT SUPPORTED
+npm error gyp ERR! find Python - "C:\Program Files\Python310\python.exe" could not be run
+npm error gyp ERR! find Python checking if Python is C:\Users\bbwusa\AppData\Local\Programs\Python\Python310-32\python.exe
+npm error gyp ERR! find Python - version is ""
+npm error gyp ERR! find Python - version is  - should be >=3.6.0
+npm error gyp ERR! find Python - THIS VERSION OF PYTHON IS NOT SUPPORTED
+npm error gyp ERR! find Python - "C:\Users\bbwusa\AppData\Local\Programs\Python\Python310-32\python.exe" could not be run
+npm error gyp ERR! find Python checking if Python is C:\Program Files\Python310-32\python.exe
+npm error gyp ERR! find Python - version is ""
+npm error gyp ERR! find Python - version is  - should be >=3.6.0
+npm error gyp ERR! find Python - THIS VERSION OF PYTHON IS NOT SUPPORTED
+npm error gyp ERR! find Python - "C:\Program Files\Python310-32\python.exe" could not be run
+npm error gyp ERR! find Python checking if Python is C:\Program Files (x86)\Python310-32\python.exe
+npm error gyp ERR! find Python - version is ""
+npm error gyp ERR! find Python - version is  - should be >=3.6.0
+npm error gyp ERR! find Python - THIS VERSION OF PYTHON IS NOT SUPPORTED
+npm error gyp ERR! find Python - "C:\Program Files (x86)\Python310-32\python.exe" could not be run
+npm error gyp ERR! find Python checking if Python is C:\Users\bbwusa\AppData\Local\Programs\Python\Python39\python.exe
+npm error gyp ERR! find Python - version is ""
+npm error gyp ERR! find Python - version is  - should be >=3.6.0
+npm error gyp ERR! find Python - THIS VERSION OF PYTHON IS NOT SUPPORTED
+npm error gyp ERR! find Python - "C:\Users\bbwusa\AppData\Local\Programs\Python\Python39\python.exe" could not be run
+npm error gyp ERR! find Python checking if Python is C:\Program Files\Python39\python.exe
+npm error gyp ERR! find Python - version is ""
+npm error gyp ERR! find Python - version is  - should be >=3.6.0
+npm error gyp ERR! find Python - THIS VERSION OF PYTHON IS NOT SUPPORTED
+npm error gyp ERR! find Python - "C:\Program Files\Python39\python.exe" could not be run
+npm error gyp ERR! find Python checking if Python is C:\Users\bbwusa\AppData\Local\Programs\Python\Python39-32\python.exe
+npm error gyp ERR! find Python - version is ""
+npm error gyp ERR! find Python - version is  - should be >=3.6.0
+npm error gyp ERR! find Python - THIS VERSION OF PYTHON IS NOT SUPPORTED
+npm error gyp ERR! find Python - "C:\Users\bbwusa\AppData\Local\Programs\Python\Python39-32\python.exe" could not be run
+npm error gyp ERR! find Python checking if Python is C:\Program Files\Python39-32\python.exe
+npm error gyp ERR! find Python - version is ""
+npm error gyp ERR! find Python - version is  - should be >=3.6.0
+npm error gyp ERR! find Python - THIS VERSION OF PYTHON IS NOT SUPPORTED
+npm error gyp ERR! find Python - "C:\Program Files\Python39-32\python.exe" could not be run
+npm error gyp ERR! find Python checking if Python is C:\Program Files (x86)\Python39-32\python.exe
+npm error gyp ERR! find Python - version is ""
+npm error gyp ERR! find Python - version is  - should be >=3.6.0
+npm error gyp ERR! find Python - THIS VERSION OF PYTHON IS NOT SUPPORTED
+npm error gyp ERR! find Python - "C:\Program Files (x86)\Python39-32\python.exe" could not be run
+npm error gyp ERR! find Python checking if Python is C:\Users\bbwusa\AppData\Local\Programs\Python\Python38\python.exe
+npm error gyp ERR! find Python - version is ""
+npm error gyp ERR! find Python - version is  - should be >=3.6.0
+npm error gyp ERR! find Python - THIS VERSION OF PYTHON IS NOT SUPPORTED
+npm error gyp ERR! find Python - "C:\Users\bbwusa\AppData\Local\Programs\Python\Python38\python.exe" could not be run
+npm error gyp ERR! find Python checking if Python is C:\Program Files\Python38\python.exe
+npm error gyp ERR! find Python - version is ""
+npm error gyp ERR! find Python - version is  - should be >=3.6.0
+npm error gyp ERR! find Python - THIS VERSION OF PYTHON IS NOT SUPPORTED
+npm error gyp ERR! find Python - "C:\Program Files\Python38\python.exe" could not be run
+npm error gyp ERR! find Python checking if Python is C:\Users\bbwusa\AppData\Local\Programs\Python\Python38-32\python.exe
+npm error gyp ERR! find Python - version is ""
+npm error gyp ERR! find Python - version is  - should be >=3.6.0
+npm error gyp ERR! find Python - THIS VERSION OF PYTHON IS NOT SUPPORTED
+npm error gyp ERR! find Python - "C:\Users\bbwusa\AppData\Local\Programs\Python\Python38-32\python.exe" could not be run
+npm error gyp ERR! find Python checking if Python is C:\Program Files\Python38-32\python.exe
+npm error gyp ERR! find Python - version is ""
+npm error gyp ERR! find Python - version is  - should be >=3.6.0
+npm error gyp ERR! find Python - THIS VERSION OF PYTHON IS NOT SUPPORTED
+npm error gyp ERR! find Python - "C:\Program Files\Python38-32\python.exe" could not be run
+npm error gyp ERR! find Python checking if Python is C:\Program Files (x86)\Python38-32\python.exe
+npm error gyp ERR! find Python - version is ""
+npm error gyp ERR! find Python - version is  - should be >=3.6.0
+npm error gyp ERR! find Python - THIS VERSION OF PYTHON IS NOT SUPPORTED
+npm error gyp ERR! find Python - "C:\Program Files (x86)\Python38-32\python.exe" could not be run
+npm error gyp ERR! find Python
+npm error gyp ERR! find Python **********************************************************
+npm error gyp ERR! find Python You need to install the latest version of Python.
+npm error gyp ERR! find Python Node-gyp should be able to find and use Python. If not,
+npm error gyp ERR! find Python you can try one of the following options:
+npm error gyp ERR! find Python - Use the switch --python="C:\Path\To\python.exe"
+npm error gyp ERR! find Python (accepted by both node-gyp and npm)
+npm error gyp ERR! find Python - Set the environment variable PYTHON
+npm error gyp ERR! find Python - Set the npm configuration variable python:
+npm error gyp ERR! find Python npm config set python "C:\Path\To\python.exe"
+npm error gyp ERR! find Python For more information consult the documentation at:
+npm error gyp ERR! find Python https://github.com/nodejs/node-gyp#installation
+npm error gyp ERR! find Python **********************************************************
+npm error gyp ERR! find Python
+npm error gyp ERR! configure error
+npm error gyp ERR! stack Error: Could not find any Python installation to use
+npm error gyp ERR! stack at PythonFinder.fail (C:\Program Files\nodejs\node_modules\npm\node_modules\node-gyp\lib\find-python.js:306:11)
+npm error gyp ERR! stack at PythonFinder.findPython (C:\Program Files\nodejs\node_modules\npm\node_modules\node-gyp\lib\find-python.js:164:17)
+npm error gyp ERR! stack at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+npm error gyp ERR! stack at async configure (C:\Program Files\nodejs\node_modules\npm\node_modules\node-gyp\lib\configure.js:27:18)  
+npm error gyp ERR! stack at async run (C:\Program Files\nodejs\node_modules\npm\node_modules\node-gyp\bin\node-gyp.js:81:18)
+npm error gyp ERR! System Windows_NT 10.0.22631
+npm error gyp ERR! command "C:\\Program Files\\nodejs\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\node_modules\\node-gyp\\bin\\node-gyp.js" "configure" "--fallback-to-build" "--module=C:\\Users\\bbwusa\\BeTasks\\ECHO\\dev\\outage-management\\node_modules\\pulsar-client\\build\\Release\\libpulsar.node" "--module_name=libpulsar" "--module_path=C:\\Users\\bbwusa\\BeTasks\\ECHO\\dev\\outage-management\\node_modules\\pulsar-client\\build\\Release" "--napi_version=9" "--node_abi_napi=napi" "--napi_build_version=0" "--node_napi_label=node-v127"
+npm error gyp ERR! cwd C:\Users\bbwusa\BeTasks\ECHO\dev\outage-management\node_modules\pulsar-client
+npm error gyp ERR! node -v v22.12.0
+npm error gyp ERR! node-gyp -v v10.2.0
+npm error gyp ERR! not ok
+npm error node-pre-gyp ERR! build error
+npm error node-pre-gyp ERR! stack Error: Failed to execute 'C:\Program Files\nodejs\node.exe C:\Program Files\nodejs\node_modules\npm\node_modules\node-gyp\bin\node-gyp.js configure --fallback-to-build --module=C:\Users\bbwusa\BeTasks\ECHO\dev\outage-management\node_modules\pulsar-client\build\Release\libpulsar.node --module_name=libpulsar --module_path=C:\Users\bbwusa\BeTasks\ECHO\dev\outage-management\node_modules\pulsar-client\build\Release --napi_version=9 --node_abi_napi=napi --napi_build_version=0 --node_napi_label=node-v127' (1)
+npm error node-pre-gyp ERR! stack     at ChildProcess.<anonymous> (C:\Users\bbwusa\BeTasks\ECHO\dev\outage-management\node_modules\node-pre-gyp\lib\util\compile.js:83:29)
+npm error node-pre-gyp ERR! stack     at ChildProcess.emit (node:events:524:28)
+npm error node-pre-gyp ERR! stack     at maybeClose (node:internal/child_process:1101:16)
+npm error node-pre-gyp ERR! stack     at ChildProcess._handle.onexit (node:internal/child_process:304:5)
+npm error node-pre-gyp ERR! System Windows_NT 10.0.22631
+npm error node-pre-gyp ERR! command "C:\\Program Files\\nodejs\\node.exe" "C:\\Users\\bbwusa\\BeTasks\\ECHO\\dev\\outage-management\\node_modules\\node-pre-gyp\\bin\\node-pre-gyp" "install" "--fallback-to-build"
+npm error node-pre-gyp ERR! cwd C:\Users\bbwusa\BeTasks\ECHO\dev\outage-management\node_modules\pulsar-client
+npm error node-pre-gyp ERR! node -v v22.12.0
+npm error node-pre-gyp ERR! node-pre-gyp -v v0.15.0
+npm error node-pre-gyp ERR! not ok
+npm error A complete log of this run can be found in: C:\Users\bbwusa\AppData\Local\npm-cache\_logs\2025-03-24T14_16_45_037Z-debug-0.log

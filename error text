@@ -1,104 +1,29 @@
-public List<DbWfmPropertiesDTO> getDbProperties(List<String> keyNames, Integer domainId) {
-		List<DbWfmPropertiesDTO> dbWfmProperties = new ArrayList<>();
-		try {
-			LOGGER.info("getDbProperties inputs:: keyNames = " + keyNames + ", domainId = " + domainId);
-			String sql = "SELECT DOMAIN_ID, KEY, VALUE FROM WFM_CORE.WFM_PROPERTIES "
-					+ "WHERE KEY IN (:keyNames) AND DOMAIN_ID = :domainId";
-			// 
-			
-			MapSqlParameterSource params = new MapSqlParameterSource();
-			params.addValue("keyNames", keyNames);
-			params.addValue("domainId", domainId);
-			dbWfmProperties = wfmNamedParameterJdbcTemplate.query(sql, params, DbWfmPropertiesDTO.getMapper()); // can you explain this line 
-		} catch (Exception err) {
-			LOGGER.error("getDbProperties :: error::", err);
-		}
-		LOGGER.info("getDbProperties returns:: dbWfmProperties = " + dbWfmProperties);
-		return dbWfmProperties;
-	}
+Uncaught ReferenceError: $ is not defined
+    at consumption-ui/:1:888Understand this errorAI
+index.js:15 SIT
+index.js:20 window href : https://coe-1f-services-sit-east.ebiz.verizon.com/consumption-ui/#/project-details#vzid=SWRIIN
+index.js:30 rum environment  SIT
+index.js:58 inside rumUrl SIT
+index.js:171 urlParams Array(0)
+index.js:180 hrefhttps%3A%2F%2Fcoe-1f-services-sit-east.ebiz.verizon.com%2Fconsumption-ui%2F%23%2Fproject-details%23vzid%3DSWRIIN
+index.js:192 Uncaught SecurityError: Failed to read a named property 'sessionStorage' from 'Window': Blocked a frame with origin "https://coe-1f-services-sit-east.ebiz.verizon.com" from accessing a cross-origin frame.
+    at index.js:173:1
+    at serviceWorker.js:138:37
+    at serviceWorker.js:138:37Understand this errorAI
+IFrame.jsx:79 Resizing method call SecurityError: Failed to read a named property 'getElementsByTagName' from 'Window': Blocked a frame with origin "https://coe-web-sit-east.ebiz.verizon.com" from accessing a cross-origin frame.
+(anonymous) @ IFrame.jsx:79Understand this errorAI
+clickstream.js:1769 {"event":{"system_name":"Canvas","app_name":"Projects Canvas","screen_name":"Project Initiation","component_name":"Show Next","panel_name":"","referrer":"https://canvassit1.ebiz.verizon.com/","screen_url":"https://coe-web-sit-east.ebiz.verizon.com/coe-canvas/project-initiation/index.html#project-initiation","event_type":"click","form_element":"DIV","class_list":"","id":"","label":"Show Next","name":"Show Next","x":824,"y":726,"timestamp":"2025-03-25T13:35:46.820Z"},"entity":{"readable_info":"Clicked on component Show Next where form element is DIV","uicollection_version":"JS 1.9.8","browser_details":"Chrome 134","device_details":"Windows 10","screen_opentime":"2025-03-25T13:30:56.710Z","screen_closetime":""},"user":{"first_name":"Indiran","last_name":"S","vzid":"SWRIIN"}}
+NfidDetailAction.js:136 updating proj desc
+siteTypeDetailsReducer.js:8 Entered savesitetype reducer
+siteTypeDetailsReducer.js:9 undefined
+NfidDetails.jsx:204 Object
+NfidDetails.jsx:1108 Object
+Message.jsx:75 Object
+IFrame.jsx:18 IFrame post messgae  Object
+clickstream.js:1769 {"event":{"system_name":"Canvas","app_name":"Projects Canvas","screen_name":"Project Initiation","component_name":"Project Name: Fiber Assignment / Access / Network Fullfillment / All Service Type","panel_name":"","referrer":"https://canvassit1.ebiz.verizon.com/","screen_url":"https://coe-web-sit-east.ebiz.verizon.com/coe-canvas/project-initiation/index.html#project-initiation","event_type":"click","form_element":"P","class_list":"","id":"","label":"Project Name: Fiber Assignment / Access / Network Fullfillment / All Service Type","name":"Project Name: Fiber Assignment / Access / Network Fullfillment / All Service Type","x":855,"y":144,"timestamp":"2025-03-25T13:35:58.699Z"},"entity":{"readable_info":"Clicked on component Project Name: Fiber Assignment / Access / Network Fullfillment / All Service Type where form element is P","uicollection_version":"JS 1.9.8","browser_details":"Chrome 134","device_details":"Windows 10","screen_opentime":"2025-03-25T13:30:56.710Z","screen_closetime":""},"user":{"first_name":"Indiran","last_name":"S","vzid":"SWRIIN"}}
 
-
-
-package com.verizon.ihut.model;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import org.springframework.jdbc.core.RowMapper;
-
-public class DbWfmPropertiesDTO {
-    private Integer domainId;
-	private String keyName;
-	private String value;
-	public Integer getDomainId() {
-		return domainId;
-	}
-	public void setDomainId(Integer domainId) {
-		this.domainId = domainId;
-	}
-	public String getKeyName() {
-		return keyName;
-	}
-	public void setKeyName(String keyName) {
-		this.keyName = keyName;
-	}
-	public String getValue() {
-		return value;
-	}
-	public void setValue(String value) {
-		this.value = value;
-	}
-	
-	public static RowMapper<DbWfmPropertiesDTO> getMapper() {
-		return new RowMapper<DbWfmPropertiesDTO>() {
-			@Override
-			public DbWfmPropertiesDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
-				DbWfmPropertiesDTO candidate = new DbWfmPropertiesDTO();
-				candidate.setDomainId((rs.getInt("DOMAIN_ID")));
-				candidate.setKeyName((rs.getString("KEY")));
-				candidate.setValue((rs.getString("VALUE")));
-				return (candidate);
-			}
-		};
-	}
-	@Override
-	public String toString() {
-		return "DbWfmPropertiesDTO [domainId=" + domainId + ", keyName=" + keyName + ", value=" + value + "]";
-	}
-	
-	
-}
-
-
-
-
-
-String sql = "SELECT DOMAIN_ID, `KEY`, VALUE FROM WFM_CORE.WFM_PROPERTIES "
-           + "WHERE `KEY` IN (" + String.join(",", Collections.nCopies(keyNames.size(), "?")) + ") "
-           + "AND DOMAIN_ID = ?";
-
-dbWfmProperties = jdbcTemplate.query(sql, 
-    keyNames.toArray(), 
-    DbWfmPropertiesDTO.getMapper()
-);
-
-
-
-
-------
-String sql = "SELECT DOMAIN_ID, `KEY`, VALUE FROM WFM_CORE.WFM_PROPERTIES "
-           + "WHERE FIND_IN_SET(`KEY`, :keyNames) AND DOMAIN_ID = :domainId";
-
-
-
-
-
-
-
-Hello Srinivasan and Viknesh,
-
-Regarding ticket no. PEDS-771, the issue has been analyzed and identified. The cancellation of NFID is not being reflected in the Status field on the project summary. This issue arises due to missing Domain ID and Value URL data. Once the missing data is inserted, the functionality will work as expected.
-
-We have informed the DB team to insert the specific values into the database.
-
-Best regards,
+                
+          
+          
+          
+         Chrome is moving towards a new experience that allows users to choose to browse without third-party cookies.

@@ -1,0 +1,31 @@
+This is new Jira ticket peds-1406
+COOS - Df order manual creation screen issue.
+
+Create Network Project allows VzB Manual users to create Manual Consumption orders. With recent chrome upgrade, this functionality is broken and users are not able to use this screen to create Manual consumption orders.
+
+Big4 to be selected in Project Initiation screen: Fiber Assignment / Access / Network Fulfillment / All service type
+
+When we click on Next, we are supposed to see consumption process creation related screen however currently returning blank due to CORS issue.
+
+ 
+
+Component that is included in this iframe:
+UAT - https://coe-1f-services-uat.ebiz.verizon.com/consumption-ui/#/project-details#vzid=SAVAHA3?navRefresh
+PRD - https://coe-1f-services.verizon.com/consumption-ui/#/project-details#vzid=SAVAHA3?navRefresh
+
+ 
+
+Mentioned AYS resolved by WA. INC014176245 (We attached the user provided excel sheet below, screen shot and also VZ created jira).
+
+ 
+
+AYS created by "Dan". If need more info kindly reach out me, Dan or Avishek.
+
+ 
+
+AYS Description:
+
+Need manual consumption orders created for (7) sites for the City of Nashville, TN. Please see attached file for information.
+
+Ref Jira : NTSCR-97714
+

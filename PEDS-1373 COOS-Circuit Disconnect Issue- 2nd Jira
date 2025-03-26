@@ -1,0 +1,206 @@
+This is one new jira ticket 
+Ticket no: PEDS-1373
+title : COOS-Circuit Disconnect Issue 
+
++++++++++++++++++++++++++++++++++++++++ Disconnect issue list of AYS.
+
+ 
+
+1).INC014140803 => 2407CGAI =>  6 circuits but 2 are In effect.
+
+AYS Description:
+
+This circuit was supposed to have been disconnected but it is still showing in effect. Please move this to disconnected. 
+
+Our analysis:
+
+DF/LXGF/2131022001/FL Disconnected
+
+DF/LXGF/2131022002/FL Disconnected
+
+DF/LXGF/2131022003/FL In Effect
+
+DF/LXGF/2131022004/FL Disconnected
+
+DF/LXGF/2131022005/FL In Effect
+
+DF/LXGF/2131022006/FL Disconnected
+
++++++++++++++++++++++++++++++++++++
+
+2).INC014121125 => 1906CBGK (VerizonWirelessOneFiber) All are In effect. No DISCONNET NFID.
+
+ 
+
+AYS Description:
+
+Please delete these eight circuit IDs from the Broken Circuits Report and from NTLS and from FS.  They've all been replaced with other circuit IDs.  Thanks.
+Network Fulfillment consumption request,
+
+Our analysis:
+
+DF/LXGF/800766/OK    In Effect
+DF/LXGF/800767/OK    In Effect
+DF/LXGF/800768/OK    In Effect
+DF/LXGF/800769/OK    In Effect
+DF/LXGF/800770/OK    In Effect
+DF/LXGF/800771/OK    In Effect
+DF/LXGF/800772/OK    In Effect
+DF/LXGF/800773/OK    In Effect
+DF/LXGF/800774/OK    In Effect
+DF/LXGF/800775/OK    In Effect
+DF/LXGF/800776/OK    In Effect
+DF/LXGF/800777/OK    In Effect
+DF/LXGF/800778/OK    In Effect
+DF/LXGF/800779/OK    In Effect
+DF/LXGF/800820/OK    In Effect
+DF/LXGF/800821/OK    In Effect
+
+++++++++++++++++++++++++++++++++++++++
+
+3).INC014121041 => 1906CBFK (VerizonWirelessOneFiber) No circuits in DB.
+
+AYS Description:
+
+Please delete these 34 circuit IDs from the Broken Circuits Report and from NTLS and from FS.  They've all been replaced with other circuit IDs.  Thanks.
+Network Fulfillment consumption request,
+
+Our analysis:
+
+SELECT * FROM wfm_nf.NF_FIBER_CKT_DEMARC c WHERE nfid in ('1906CBFK');{}
+
+There is no record in DB. But NF tre project summery showing No of Fibers: 16
+
++++++++++++++++++++++++++++++
+
+4).INC014095384 => Disconnect Issue.
+
+AYS Description{}:{} These Circuits are still in PENDING status in FIM, they need to be disconnected in FIM and Circuit status changed to AVAILABLE.
+Please disconnect these circuits in FIM and update the circuit status "Available" for the attached circuits.
+
+1809CFTZ, 1808CUZM ,1808CUZO
+
+Our analysis:
+
+1).DF order => 1809CFTZ =>Disco:1908ARZO order disconnected successfully (6 circuits has same Disco has same NFID). 
+
+DF/LXGF/006046/TX    Disconnected
+DF/LXGF/006047/TX    Disconnected
+DF/LXGF/006048/TX    Disconnected
+DF/LXGF/006049/TX    Disconnected
+DF/LXGF/006050/TX    Disconnected
+DF/LXGF/006051/TX    Disconnected
+
+Circuit disconnect reason column showing "Reason Not Provided" Null record from fuze. When check "Event" table. NFTree showing disconnect for Disco NFID.
+
+2).NFID => 1808CUZM =>Disco:1908ARZI order disconnected successfully (6 Disco has same NFID). 
+
+ 
+
+DF/LXGF/005174/TX    Disconnected
+DF/LXGF/005175/TX    Disconnected
+DF/LXGF/005176/TX    Disconnected
+DF/LXGF/005177/TX    Disconnected
+DF/LXGF/005178/TX    Disconnected
+DF/LXGF/005179/TX    Disconnected
+
+Circuit disconnect reason column showing "Reason Not Provided" Null record from fuze. When check "Event" table. NFTree showing disconnect for Disco NFID.
+
+ 
+
+3).1808CUZO => We have no circuits. Status: Disconnected
+
+++++++++++++++++++++++++++++++++++++++
+
+5).INC014069335 => 2008CEBI (VerizonWirelessOneFiber) PC. Hi Jason, Kindly ask the counter part to disconnect the circuits in fuze. Some of them disconnected. Kindly try once again. Thank you. 
+
+AYS Description:
+
+Hello - partial disconnect orders have been placed to eliminate CIDs needed for another site. The CIDs are preventing me from completing the new consumption order. See attached CIDs needed to be removed and the trace from a CID in FS. 
+
+Our analysis:
+
+DF/LXGF/370997/MN    Disconnected
+DF/LXGF/370998/MN    Disconnected
+DF/LXGF/370999/MN    Disconnected
+DF/LXGF/371000/MN    Disconnected
+DF/LXGF/371001/MN    Disconnected
+DF/LXGF/371002/MN    In Effect
+DF/LXGF/371003/MN    Disconnected
+DF/LXGF/371004/MN    Disconnected
+DF/LXGF/371005/MN    Disconnected
+DF/LXGF/371006/MN    Disconnected
+DF/LXGF/370983/MN    In Effect
+DF/LXGF/370984/MN    In Effect
+DF/LXGF/370985/MN    In Effect
+DF/LXGF/370986/MN    In Effect
+DF/LXGF/370987/MN    Disconnected
+DF/LXGF/370988/MN    Disconnected
+DF/LXGF/370989/MN    Disconnected
+DF/LXGF/370990/MN    Disconnected
+DF/LXGF/370991/MN    Disconnected
+DF/LXGF/370992/MN    Disconnected
+DF/LXGF/370993/MN    Disconnected
+DF/LXGF/370994/MN    Disconnected
+DF/LXGF/370995/MN    Disconnected
+DF/LXGF/370996/MN    Disconnected
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+6). INC013923086 => 2105BTHC (VerizonWirelessOneFiber) (PC). 
+
+AYS Description:
+
+Df order: 2105BTHC
+ GP OMA 88TH & MAPLE — Disconnect not processing to complete in CND
+DF/LXGF/604443/NE  / order 10067835{}
+
+Our analysis:
+
+DF/LXGF/604425/NE    In Effect
+DF/LXGF/604426/NE    In Effect
+DF/LXGF/604427/NE    In Effect
+DF/LXGF/604428/NE    In Effect
+DF/LXGF/604429/NE    Disconnected
+DF/LXGF/604430/NE    Disconnected
+DF/LXGF/604431/NE    Disconnected
+DF/LXGF/604432/NE    Disconnected
+DF/LXGF/604433/NE    Disconnected
+DF/LXGF/604434/NE    Disconnected
+DF/LXGF/604435/NE    Disconnected
+DF/LXGF/604436/NE    Disconnected
+DF/LXGF/604437/NE    Disconnected
+DF/LXGF/604438/NE    Disconnected
+DF/LXGF/604439/NE    Disconnected
+DF/LXGF/604440/NE    Disconnected
+DF/LXGF/604441/NE    Disconnected
+DF/LXGF/604442/NE    Disconnected
+DF/LXGF/604443/NE    In Effect
+DF/LXGF/604444/NE    Disconnected
+DF/LXGF/604445/NE    Disconnected
+DF/LXGF/604446/NE    Disconnected
+DF/LXGF/604447/NE    Disconnected
+DF/LXGF/604448/NE    Disconnected ========================================================>
+
+ 
+
+Ref Jira :PEDS-988
+
+ 
+
+Related queries:
+
+SELECT NFID,CIRCUIT_DEMARC_ID,DISCO_NFID,CIRCUIT_ID,CIRCUIT_STATUS,DISCO_REASON FROM wfm_nf.NF_FIBER_CKT_DEMARC c WHERE nfid in ('2105BTHC');
+
+SELECT * FROM wfm_nf. nf_fiber_events WHERE nfid IN ('1908ARZO');
+
+INC014121125 & INC014121041
+
+
+
+
+
+
+
+can you explain the ticket 
+then, how to resolve the issue

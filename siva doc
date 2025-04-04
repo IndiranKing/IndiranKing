@@ -1,0 +1,359 @@
+public JSONObject getNfTree(String nfid, String view, String action, String allFetched,
+			boolean bringOnlyDependentTasks, boolean bringOnlyAssociatedTasks) {
+		JSONObject response = new JSONObject();
+		if (checkForValidNFID(nfid) != 0) {
+			String topNodeTitle = null;
+			JSONArray responseArray = new JSONArray();
+			JSONArray associatedJobs = new JSONArray();
+			JSONArray relatedJobs = new JSONArray();
+			JSONArray dependentJobs = new JSONArray();
+			JSONObject json = new JSONObject();
+			JSONObject relatedJson = new JSONObject();
+			JSONObject dependentJson = new JSONObject();
+			json.put("nfid", nfid);
+			int parentJobId = 0;
+			// GET PARENT NFID STATUS
+			int status = getParentNFStatus(nfid);
+			SqlRowSet rs = getJdbcTemplate().queryForRowSet(
+					"SELECT NF_STATUS_NAME FROM NF_STATUS WHERE NF_STATUS_ID = ?", new Object[] { status });
+			while (rs.next()) {
+				json.put(STATUS, rs.getString(NF_STATUS_NAME));
+				json.put("icon", getStatusIcon(rs.getString(NF_STATUS_NAME)));
+				json.put("nfid", nfid);
+				topNodeTitle = "NFID " + nfid;
+				json.put(TITLE, topNodeTitle);
+				String treeUrl = getJdbcTemplate().queryForObject(
+						"SELECT VALUE AS TREE_URL FROM NF_PROPERTIES WHERE KEY = 'NFID_TREE_URL'", String.class);
+				String treeUrl2 = treeUrl != null ? treeUrl.replace("[NFID]", nfid) : "";
+				if (checkForMultipleChild(nfid) > 1) {
+					treeUrl2 = treeUrl2 + "&milestoneFlag=true";
+				}
+				json.put("treeUrl", treeUrl2);
+			}
+			// END OF GET PARENT NFID STATUS
+			LOGGER.info("::::::: Get nf tree json with tree url: " + json.toString());
+			String finalSQL = (allFetched != null && "true".equalsIgnoreCase(allFetched)) ? GET_MAX_PARENT
+					: "SELECT * FROM (" + GET_MAX_PARENT + ") WHERE ROWNUM < 200";
+			try {
+				rs = getJdbcTemplate().queryForRowSet(finalSQL, new Object[] { nfid, nfid, nfid });
+				LOGGER.info("::::::: Status Val " + status);
+			} catch (final Exception e) {
+				rs = getJdbcTemplate().queryForRowSet("SELECT NF_JOB_ID FROM NF_IDS WHERE NF_ID = ?",
+						new Object[] { nfid });
+			}
+			while (rs.next()) {
+				json.put(JOB_ID, rs.getInt(NF_JOB_ID));
+				json.put("id", nfid + "-" + rs.getInt(NF_JOB_ID));
+				json.put(PARENT_JOB_ID, rs.getInt(NF_JOB_ID));
+				parentJobId = rs.getInt(NF_JOB_ID);
+				String oneFiberComp = "N";
+				if (null == action) {
+					associatedJobs.add(getAssociatedJobs(rs.getInt(NF_JOB_ID), nfid, view, allFetched));
+				}
+				if (null == view) {
+					SqlRowSet rs1 = getJdbcTemplate().queryForRowSet(
+							"select NF_COMPONENT_NAME from wfm_nf.nf_components nc inner join wfm_nf.nf_jobs nj on nj.nf_component_id=nc.nf_component_id where nj.nf_job_id=?",
+							new Object[] { rs.getInt(NF_JOB_ID) });
+					while (rs1.next()) {
+						String ComponentName = rs1.getString(NF_COMPONENT_NAME);
+						LOGGER.info("::::::: Component Name in Get NF Tree: " + ComponentName);
+						if (null != ComponentName
+								&& ("Site".equalsIgnoreCase(ComponentName) || "Segment".equalsIgnoreCase(ComponentName)
+										|| "Permit".equalsIgnoreCase(ComponentName))) {
+							oneFiberComp = "Y";
+						}
+					}
+					LOGGER.info("::::::: oneFiberComp in Get NF Tree: " + oneFiberComp);
+					if (null == oneFiberComp || oneFiberComp.equalsIgnoreCase("N")) {
+						if (null != action && bringOnlyAssociatedTasks) {
+							relatedJobs.add(getAssociatedJobs(rs.getInt(NF_JOB_ID), nfid, "related", allFetched));
+							if( parAssociationRemove(relatedJobs)) { relatedJobs = new JSONArray();}
+						}
+					}
+				}
+				String AFEJobQuery = "SELECT * FROM NF_JOBS WHERE NF_JOB_ID = ? AND NF_SYSTEM_ID = 1 AND NF_COMPONENT_ID =27 ";
+				SqlRowSet rs2 = getJdbcTemplate().queryForRowSet(AFEJobQuery, new Object[] { rs.getInt(NF_JOB_ID) });
+				Boolean isAFEJOB = false;
+				while (rs2.next()) {
+					isAFEJOB = true;
+				}
+				if (isAFEJOB) {
+					break;
+				}
+			}
+			if (associatedJobs != null && associatedJobs.size() > 0) {
+				if (associatedJobs.getJSONObject(0).has("recordsCount")) {
+					Integer recordsCount = Integer.valueOf(associatedJobs.getJSONObject(0).getString("recordsCount"));
+					json.put("recordsCount", recordsCount);
+				} else {
+					json.put("recordsCount", 0);
+				}
+			} else {
+				json.put("recordsCount", 0);
+			}
+			for (int index = 0; index < associatedJobs.size(); index++) {
+				JSONObject obj = associatedJobs.getJSONObject(index);
+				if (null == obj.get("treeUrl")) {
+					associatedJobs.remove(index);
+					JSONArray childArray = new JSONArray();
+					try {
+						childArray = obj.getJSONArray("children");
+					} catch (final Exception e) {
+						LOGGER.error("Exception caught in getNFTree relatedJobs : " + e);
+					}
+					for (int innerIndex = 0; innerIndex < childArray.size(); innerIndex++) {
+						associatedJobs.add(childArray.getJSONObject(innerIndex));
+					}
+				}
+			}
+			for (int index = 0; index < relatedJobs.size(); index++) {
+				JSONObject obj = relatedJobs.getJSONObject(index);
+				if (null == obj.get("treeUrl")) {
+					relatedJobs.remove(index);
+					JSONArray childArray = new JSONArray();
+					try {
+						childArray = obj.getJSONArray("children");
+					} catch (final Exception e) {
+						LOGGER.error("Exception caught in getNFTree relatedJobs : " + e);
+					}
+					for (int innerIndex = 0; innerIndex < childArray.size(); innerIndex++) {
+						relatedJobs.add(childArray.getJSONObject(innerIndex));
+					}
+				}
+			}
+			json.put(CHILDREN, associatedJobs);
+			responseArray.add(json);
+			if (relatedJobs.size() > 0) {
+				relatedJson = json;
+				String title2 = topNodeTitle + " - " + ASSOCIATED_CHILDREN;
+				relatedJson.put(TITLE, title2);
+				relatedJson.put(CHILDREN, relatedJobs);
+				responseArray.add(relatedJson);
+			}
+			// Dependent Components
+			if (null == view && bringOnlyDependentTasks) {
+				if (null != action) {
+					SqlRowSet rs2 = getJdbcTemplate().queryForRowSet(GET_DEPENDENT_JOBS, new Object[] { nfid, nfid });
+					while (rs2.next()) {
+						boolean showCategorySummary = true;
+						String title = null;
+						String statusTitle = null;
+						String dependencyId = rs2.getString("NF_DEPENDENCY_ID");
+						String srcNfId = rs2.getString("NFID");
+						String dependentType = rs2.getString("DEPENDENT_TYPE");
+						String dependentNfId = rs2.getString("DEPENDENT_NFID");
+						String category = rs2.getString("NF_CATEGORY");
+						String categoryValue = rs2.getString("NF_CATEGORY_VALUE");
+						String defaultChildrenIcon = "notification-alert-small_new.png";
+						if (dependentType.equalsIgnoreCase("Related To")) {
+							showCategorySummary = false;
+							if (nfid.equalsIgnoreCase(dependentNfId)) {
+								title = "Related to NFID " + srcNfId;
+								statusTitle = "NFID " + dependentNfId + " related to NFID " + srcNfId;
+							} else {
+								title = "Related to NFID " + dependentNfId;
+								statusTitle = "NFID " + srcNfId + " related to NFID " + dependentNfId;
+							}
+						} else if (dependentType.equalsIgnoreCase("Needed For")) {
+							if (nfid.equalsIgnoreCase(dependentNfId)) {
+								title = "Depends on NFID " + srcNfId;
+								statusTitle = "NFID " + dependentNfId + " depends on NFID " + srcNfId;
+							} else {
+								title = "Needed for NFID " + dependentNfId;
+								statusTitle = "NFID " + srcNfId + " needed for NFID " + dependentNfId;
+							}
+						} else if (dependentType.equalsIgnoreCase("Blocked By")) {
+							if (nfid.equalsIgnoreCase(dependentNfId)) {
+								title = "Needed for NFID " + srcNfId;
+								statusTitle = "NFID " + dependentNfId + " needed for NFID " + srcNfId;
+							} else {
+								title = "Depends on NFID " + dependentNfId;
+								statusTitle = "NFID " + srcNfId + " depends on NFID " + dependentNfId + " (" + category
+										+ " - " + categoryValue + ")";
+							}
+						} else if (dependentType.equalsIgnoreCase("Diverse From")) {
+							if (nfid.equalsIgnoreCase(dependentNfId)) {
+								title = "Diverse from NFID " + srcNfId;
+								statusTitle = "NFID " + dependentNfId + " diverse from NFID " + srcNfId;
+							} else {
+								title = "Depends on NFID " + dependentNfId;
+								statusTitle = "NFID " + srcNfId + " depends on NFID " + dependentNfId + " (" + category
+										+ " - " + categoryValue + ")";
+							}
+						}
+						if (null != title) {
+							JSONObject obj = new JSONObject();
+							SqlRowSet rs3 = getJdbcTemplate().queryForRowSet(
+									"SELECT JOB_ID FROM NF_DEPENDENCY WHERE NF_DEPENDENCY_ID = ?",
+									new Object[] { dependencyId });
+							int dependantJobId = 0;
+							while (rs3.next()) {
+								dependantJobId = rs3.getInt("JOB_ID");
+							}
+							if (parentJobId != 0) {
+								SqlRowSet rs4 = getJdbcTemplate().queryForRowSet(
+										"SELECT NF_METADATA_VALUE FROM NF_JOB_METADATA WHERE NF_JOB_ID = ? AND NF_METADATA_KEY_ID = 203",
+										new Object[] { parentJobId });
+								while (rs4.next()) {
+									if ("true".equalsIgnoreCase(rs4.getString("NF_METADATA_VALUE"))) {
+										defaultChildrenIcon = "canceled.png";
+									}
+								}
+							}
+							obj.put("title", title);
+							obj.put("status", statusTitle);
+							obj.put("icon", ICON_PATH.concat(getStatusIcon(getNfidStatusName(dependentNfId).trim())));
+							String treeUrl = getJdbcTemplate().queryForObject(
+									"SELECT VALUE AS TREE_URL FROM NF_PROPERTIES WHERE KEY = 'NFID_DEPENDENCY_TREE_URL'",
+									String.class);
+							treeUrl = treeUrl + "&nfid=" + nfid;
+							String treeUrl2 = treeUrl != null ? treeUrl.replace("[NFDEPENDENCYID]", dependencyId) : "";
+							if (showCategorySummary) {
+								treeUrl2 = treeUrl2 + "&categoryFlag=true";
+							}
+							obj.put("treeUrl", treeUrl2);
+							dependentJobs.add(obj);
+						}
+					}
+				}
+				if (dependentJobs.size() > 0) {
+					dependentJson = json;
+					String title3 = topNodeTitle + " - " + DEPENDENT_CHILDREN;
+					dependentJson.put(TITLE, title3);
+					dependentJson.put(CHILDREN, dependentJobs);
+					responseArray.add(dependentJson);
+				}
+			}
+			response.put("getAssociationTreeResponse", responseArray);
+			LOGGER.info("getAssociationTree response :" + response);
+		}
+		return response;
+	}
+--------------------------------------------------------------------------------------------------------------------------------------------
+1:36
+This is preview response from UI ({getAssociationTreeResponse: [,…]}
+getAssociationTreeResponse
+:
+[,…]
+0
+:
+{nfid: "2502BQUJ", status: "Unknown", icon: "../../wfm/commonServices/includes/images/unknown.svg",…}
+children
+:
+[{systemName: "CCP", componentType: "Project ID", componentValue: "2553139",…},…]
+0
+:
+{systemName: "CCP", componentType: "Project ID", componentValue: "2553139",…}
+children
+:
+[{systemName: "DCWEB", componentType: "PDR", componentValue: "450487", title: "PDR-450487",…}]
+componentType
+:
+"Project ID"
+componentValue
+:
+"2553139"
+icon
+:
+"../../wfm/commonServices/includes/images/inprogress.png"
+id
+:
+"9956993-0"
+jobId
+:
+"9956993"
+metadata
+:
+[{metadataKey: "Legacy Project ID", metadataValue: "4P0E2CA"},…]
+nfid
+:
+"2502BQUJ"
+parentJobId
+:
+"9956993"
+recordsCount
+:
+1
+status
+:
+"Approved"
+systemName
+:
+"CCP"
+title
+:
+"Financial vSAP Project-2553139"
+treeUrl
+:
+"https://ccpe2e.ebiz.verizon.com/ccpscripts/ccpLogin.asp?SYSName=UUIPROJ&vSAPID=2553139"
+1
+:
+{systemName: "vBuild", componentType: "EWO", componentValue: "4P0E2CA", title: "EWO-4P0E2CA",…}
+componentType
+:
+"EWO"
+componentValue
+:
+"4P0E2CA"
+icon
+:
+"../../wfm/commonServices/includes/images/inprogress.png"
+id
+:
+"9956995-9956994-1"
+jobId
+:
+"9956995"
+metadata
+:
+[{metadataKey: "Native Status Name", metadataValue: "In Progress"}]
+nfid
+:
+"2502BQUJ"
+parentJobId
+:
+"9956994"
+status
+:
+"2502BQUJ - In Progress"
+systemName
+:
+"vBuild"
+title
+:
+"EWO-4P0E2CA"
+treeUrl
+:
+"https://coe-1a-web-uat.ebiz.verizon.com/oneaccess-ui/EWO/redirect.html?source=nf_tree&page=ewo_summary&nfid=2502BQUJ&etokenid=[ETOKENID]"
+2
+:
+{systemName: "DCWEB", componentType: "PDR", componentValue: "450487", title: "PDR-450487",…}
+icon
+:
+"../../wfm/commonServices/includes/images/unknown.svg"
+id
+:
+"2502BQUJ-9956994"
+jobId
+:
+9956994
+nfid
+:
+"2502BQUJ"
+parentJobId
+:
+9956994
+recordsCount
+:
+1
+status
+:
+"Unknown"
+title
+:
+"NFID 2502BQUJ"
+treeUrl
+:
+"https://coe-web-uat.ebiz.verizon.com/wfmservices/Summary.jsp?nfid=2502BQUJ&uuiFlag=true&defaultView=true"
+)
+This one is working fine and i have one defect like one children component is not calling correctly so i have find that the Data is in db /not how to find the data can you please give a crt query to find me

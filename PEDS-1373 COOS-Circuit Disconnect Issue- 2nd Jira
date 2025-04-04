@@ -1,16 +1,46 @@
-Create a mail 
-Jira ticket no : PEDS-1406 
-title : COOS - Df order manual creation screen issue
-application : WFM- project-initiation & consumption-ui  
-when we creating a project through canvas in this particular field [Fiber Assignment / Access / Network Fulfillment / All service type] its redirect to these url
-Component that is included in this iframe:
-UAT - https://coe-1f-services-uat.ebiz.verizon.com/consumption-ui/#/project-details#vzid=swriin?navRefresh
-PRD - https://coe-1f-services.verizon.com/consumption-ui/#/project-details#vzid=swriin?navRefresh
-SIT- https://coe-1f-services-sit-east.ebiz.verizon.com/consumption-ui/#/project-details#vzid=swriin?navRefresh
-then I get find it out the working url 
-SIT- https://coe-1f-services-sit-east.ebiz.verizon.com/consumption-ui/#/project-details?vzid=swriin
-PRD - https://coe-1f-services.verizon.com/consumption-ui/#/project-details?vzid=swriin
-UAT- https://coe-1f-services-uat.ebiz.verizon.com/consumption-ui/#/project-details?vzid=swriin
-Within the canvas application 
-So, I replaced working url into iframe but, not working without iframe these url works well 
-within the iframe its not working 
+Here’s a professional email draft based on your details:
+
+---
+
+**Subject:** [PEDS-1406] COOS - DF Order Manual Creation Screen Issue (WFM - Project-Initiation & Consumption-UI)
+
+Hi Team,
+
+I am writing to report an issue related to the DF order manual creation screen in the **WFM - project-initiation & consumption-ui** application, as tracked under **JIRA Ticket No: PEDS-1406**.
+
+While creating a project through Canvas, specifically in the field:  
+**[Fiber Assignment / Access / Network Fulfillment / All service type]**,  
+the redirection currently points to the following URLs based on the environment:
+
+- **UAT:**  
+  `https://coe-1f-services-uat.ebiz.verizon.com/consumption-ui/#/project-details#vzid=swriin?navRefresh`
+
+- **PRD:**  
+  `https://coe-1f-services.verizon.com/consumption-ui/#/project-details#vzid=swriin?navRefresh`
+
+- **SIT:**  
+  `https://coe-1f-services-sit-east.ebiz.verizon.com/consumption-ui/#/project-details#vzid=swriin?navRefresh`
+
+Upon investigation, I found that the correct and working URLs (when accessed directly) are as follows:
+
+- **SIT:**  
+  `https://coe-1f-services-sit-east.ebiz.verizon.com/consumption-ui/#/project-details?vzid=swriin`
+
+- **PRD:**  
+  `https://coe-1f-services.verizon.com/consumption-ui/#/project-details?vzid=swriin`
+
+- **UAT:**  
+  `https://coe-1f-services-uat.ebiz.verizon.com/consumption-ui/#/project-details?vzid=swriin`
+
+I tried replacing the old URLs with the working ones inside the **iframe** within the Canvas application. However, the URLs are still not loading as expected inside the iframe, although they work fine when accessed outside of it.
+
+Could you please help investigate why these URLs are not rendering properly within the iframe? It may be related to security policies (like X-Frame-Options) or content security restrictions from the source application.
+
+Looking forward to your assistance.
+
+Best regards,  
+**Indiran S.**
+
+---
+
+Let me know if you want to add logs, screenshots, or CC anyone.

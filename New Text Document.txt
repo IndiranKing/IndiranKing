@@ -1,3 +1,7 @@
+27/03/2025 -> As per root analysis this api call () And project creation of [ Fiber assignment/ Access] works through project-intiation & consumption-ui react application 28/03/2025 -> local code set-up done in project-intiation & consumption-ui. When I try to replicate the issue in local, application is not up and running in local due to "Failed to set the 'domain' property on 'Document' " 01/04/2025 -> I tried all the possible ways to resolve the issue to run the application in local but the error still persists then, connect with @sasi kumar 02/04/2025 ->
+
+
+
 not Working within iframe [Request Headers]
 
 authority:

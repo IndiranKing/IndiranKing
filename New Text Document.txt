@@ -1,295 +1,88 @@
-Sure! Let's go through the flow of how your code handles the **POST** request to `http://localhost:8080/insidehut-service/updateNftreeNodeStatus` with the request body:
-
-```json
-{
-    "nfid": "2401AOFT",
-    "status": "completed"
-}
-```
-
----
-
-### **Step-by-step Execution Flow:**
-1. **Client Sends a POST Request**
-   - You send a **POST** request to `http://localhost:8080/insidehut-service/updateNftreeNodeStatus` with the request payload.
-
----
-
-### **1. Controller Layer (`updateNftreeNodeStatus` method in Controller)**
-
-2. The request is received by the controller method:
-
-   ```java
-   public ResponseEntity<EndpointResponse<String, String>> updateNftreeNodeStatus(
-       @Valid @RequestBody UpdateNftreeNodeStatusRequest updateNftreeNodeStatusRequest, 
-       BindingResult bindingResult)
-   ```
-   
-3. The controller logs the incoming request:
-   ```java
-   LOGGER.info("POST Endpoint /updateNftreeNodeStatus request:: " + updateNftreeNodeStatusRequest);
-   ```
-   
-4. If there are validation errors (`bindingResult.hasErrors()`), it returns validation errors as a response.
-
-5. If the request is valid, it calls the **Service Layer** method:
-
-   ```java
-   iHutServce.updateNftreeNodeStatus(updateNftreeNodeStatusRequest, response);
-   ```
-
----
-
-### **2. Service Layer (`updateNftreeNodeStatus` method in `iHutService`)**
-
-6. The `updateNftreeNodeStatus` method in the **Service Layer** is called.
-
-   ```java
-   public Integer updateNftreeNodeStatus(UpdateNftreeNodeStatusRequest updateNftreeNodeStatusRequest,
-    EndpointResponse<String, String> response)
-   ```
-   
-7. Logs the request:
-   ```java
-   LOGGER.info("updateNftreeNodeStatus inputs:: updateNftreeNodeStatusRequest = " + updateNftreeNodeStatusRequest);
-   ```
-   
-8. Extracts the `nfid` from the request and fetches `projectId` from **DAO Layer**:
-   ```java
-   Integer projectId = ihutDao.getProjectId(nfid);
-   ```
-
-9. If `projectId` is **0** (record not found), it returns an error response.
-
-10. Otherwise, it fetches **external service URL** from the database:
-    ```java
-    dbWfmPropertiesRequestDTO.setDomainId(8);
-    dbWfmPropertiesRequestDTO.setKeyNames(Arrays.asList("IHUT_UPDATE_NFTREE_NODE_STATUS_URL"));
-    
-    List<DbWfmPropertiesDTO> ihutUpdateNftreeNodeStatusUrl = this.getDbProperties(dbWfmPropertiesRequestDTO, getDbProps);
-    ```
-   
-11. Calls **`getDbProperties`** method to fetch the external URL from `WFM_PROPERTIES` table.
-
-12. Uses the fetched URL to make an external API call (`updateComponentStatus` method).
-
-13. If the API response is valid and contains `"statusCode": "0"`, it updates the `STATUS` field in the database via **DAO Layer**.
-
-14. Calls the **DAO Layer** method to update the database:
-    ```java
-    count = ihutDao.updateNftreeNodeStatus(updateNftreeNodeStatusRequest);
-    ```
-
-15. If the update is successful (`count > 0`), it returns a success response.
-
-16. If the update fails, it returns an error response.
-
----
-
-### **3. DAO Layer (`updateNftreeNodeStatus` and `getDbProperties`)**
-
-#### **Fetching External API URL from Database**
-17. The **DAO Layer** fetches the required URL from the `WFM_PROPERTIES` table:
-
-    ```java
-    public List<DbWfmPropertiesDTO> getDbProperties(List<String> keyNames, Integer domainId)
-    ```
-   
-18. Runs the query:
-
-    ```sql
-    SELECT DOMAIN_ID, KEY, VALUE FROM WFM_CORE.WFM_PROPERTIES 
-    WHERE KEY IN (:keyNames) AND DOMAIN_ID = :domainId
-    ```
-   
-19. Returns the fetched URL to the **Service Layer**.
-
-#### **Updating `STATUS` Field in Database**
-20. If the **external API call is successful**, the **DAO Layer** updates the `STATUS` field in the database:
-
-    ```java
-    public Integer updateNftreeNodeStatus(UpdateNftreeNodeStatusRequest updateNftreeNodeStatusRequest)
-    ```
-   
-21. Executes the SQL update statement:
-
-    ```sql
-    UPDATE WFM_NF.NF_IHUT_ORDER SET STATUS = :status WHERE NFID = :nfid
-    ```
-   
-22. If the update is successful (`count > 0`), it returns `count = 1`.
-
----
-
-### **4. Controller Returns Response**
-23. The **Service Layer** returns the response to the **Controller**.
-
-24. The **Controller** returns an HTTP response based on the result:
-
-    - **Success Response (200 OK)**:
-      ```json
-      {
-          "operation": "updateNftreeNodeStatus",
-          "data": "completed",
-          "statusCode": "0",
-          "statusDescription": "Success"
-      }
-      ```
-      
-    - **Failure Response (500 Internal Server Error)**:
-      ```json
-      {
-          "operation": "updateNftreeNodeStatus",
-          "statusCode": "500",
-          "statusDescription": "Internal Server Error"
-      }
-      ```
-
----
-
-### **Summary of Execution Flow**
-| Step | Layer | Operation |
-|------|-------|-----------|
-| 1 | Client | Sends **POST** request with `nfid` and `status` |
-| 2 | Controller | Validates request and calls Service Layer |
-| 3 | Service Layer | Fetches `projectId` for `nfid` |
-| 4 | Service Layer | Fetches external API URL from `WFM_PROPERTIES` table |
-| 5 | Service Layer | Calls external API (`updateComponentStatus`) |
-| 6 | Service Layer | If API is successful, updates `STATUS` field in DB |
-| 7 | DAO Layer | Runs **SQL UPDATE** query on `WFM_NF.NF_IHUT_ORDER` |
-| 8 | Service Layer | Returns update result to Controller |
-| 9 | Controller | Sends response back to the client |
-
----
-
-### **Final Thoughts**
-- **If everything works fine**, the `STATUS` field in the `WFM_NF.NF_IHUT_ORDER` table is updated to `"completed"` for the given `nfid`.
-- **If the API call fails** or **`projectId` is invalid**, an appropriate error response is returned.
-
-Let me know if you need any clarifications!
-
-
-
-
-Summary of Execution Flow
-Step	Layer	Operation
-1	Client	Sends POST request with nfid and status
-2	Controller	Validates request and calls Service Layer
-3	Service Layer	Fetches projectId for nfid
-4	Service Layer	Fetches external API URL from WFM_PROPERTIES table
-5	Service Layer	Calls external API (updateComponentStatus)
-6	Service Layer	If API is successful, updates STATUS field in DB
-7	DAO Layer	Runs SQL UPDATE query on WFM_NF.NF_IHUT_ORDER
-8	Service Layer	Returns update result to Controller
-9	Controller	Sends response back to the client
-
-
-
-
-
-
-documentation 
-
-
-
-Here’s a structured documentation for the issue:  
----
-
-# **Issue Documentation: NFID Not Reflected in Status Field on Project Summary**  
-
-## **JIRA Ticket**  
-[Provide the JIRA ticket number or link if available]  
-
-## **Issue Summary**  
-The `status` field in the **Project Summary** is not being updated correctly for the given **NFID**.  
-
-## **Root Cause Analysis**  
-
-- The SQL query executed to fetch the required property values from the database is:  
-  ```sql
-  SELECT DOMAIN_ID, KEY, VALUE FROM WFM_CORE.WFM_PROPERTIES 
-  WHERE KEY IN (:keyNames) AND DOMAIN_ID = :domainId;
-  ```
-- The query is failing because there are no relevant records in the **WFM_CORE.WFM_PROPERTIES** table.  
-- Since the required configuration values are missing, the system is unable to fetch the necessary data for updating the **status**.  
-
-## **Actions Taken**  
-
-1. **DB Investigation:**  
-   - Checked the **WFM_PROPERTIES** table and confirmed that the expected records are missing.  
-   
-2. **DB Team Notified:**  
-   - The **DB team** has been informed to insert the required records into the **WFM_PROPERTIES** table.  
-
-3. **Temporary Workaround (if any):**  
-   - [Mention if any alternative approach is used until the DB team updates the table]  
-
-## **Next Steps**  
-
-- **DB team to insert required values** in the **WFM_PROPERTIES** table.  
-- **Retest the functionality** after the DB update.  
-- **Monitor logs and confirm** if the NFID status is being correctly reflected in the Project Summary.  
-
-## **Additional Notes**  
-- [Any logs, screenshots, or references that could help in debugging]  
-
----
-
-Let me know if you need any modifications!
-
-
-
-
-
-
-
-
-
-We discussed this in yesterday's call with Mohan, Jeevitha this comes as a enhancement as inside hut was a legacy application and this was integrated into consumption services 6-8 months ago as confirmed by Jeevitha, when this was done , parts of cancellation functionality might have gone missing. This issue exists in SIT,UAT and prod.
-
-To update the component status of a cancelled NFID, we are supposed to call "/updateNftreeNodeStatus" API"
-
-This is the only API where we update the status of an NFID via code.
-
-Two solutions proposed.
-
-1) Add a cancel button on UI and invoke the above URL for cancellation
-
-2) If cancellation has to be done only via Tools section, then invoke the URL again at PAM level so we have the cancellation working.
-
- 
-
-Business needs to confirm on this. Once confirmed, we can attach the story created for this functionality in NTSCR dashboard and mention that over here before closing this story.
-
-
-
-
-
-
-
-
-
-
-Sure! Here’s a simplified version of your message in easy-to-understand English:  
-
----
-
-Hi Srinivasan and Viknesh,  
-
-We discussed this issue in yesterday’s call with Mohan and Jeevitha. This is considered an enhancement because "Inside Hut" is a legacy application that was integrated into Consumption Services 6-8 months ago. As confirmed by Jeevitha, some parts of the cancellation functionality might have been missed during this integration. This issue is present in SIT, UAT, and Production.  
-
-To update the status of a cancelled NFID, we need to call the **"/updateNftreeNodeStatus" API**—this is the only API that updates an NFID's status in the code.  
-
-We have proposed two possible solutions:  
-
-1) **Add a "Cancel" button on the UI** to call this API for cancellation.  
-2) **If cancellation should only be done via the Tools section,** then we can invoke the API again at the PAM level to ensure cancellations work correctly.  
-
-We need confirmation from the business team on which approach to follow. Once they confirm, we will create a story for this functionality in the NTSCR dashboard and update the details here before closing this issue.  
-
-Best regards,  
-[Your Name]  
-
----
-
-This version makes it clear and professional while keeping it easy to understand. Let me know if you need any further refinements!
+not Working within iframe [Request Headers]
+
+authority:
+coe-1f-services-sit-east.ebiz.verizon.com
+:method:
+GET
+:path:
+/consumption-ui/
+:scheme:
+https
+accept:
+text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+accept-encoding:
+gzip, deflate, br
+accept-language:
+en-US,en;q=0.9
+cookie:
+SSODEVLB=31; SSOUATLB=33; SSOUATSESSION=V1er3CNIZ0i1kpdexXDRA34hjzI.*AAJTSQACMDIAAlNLABxySnBIbGNrdDBOYlJ4NXVoMnV5eERuTE1Majg9AAR0eXBlAANDVFMAAlMxAAIxNA..*; SSODEVSESSION=789ZyZiosBmjoxV33jSrlw7d7Hs.*AAJTSQACMDIAAlNLABxPZWJna0UwbTBqV0czUElldVliRW52TTRkeXM9AAR0eXBlAANDVFMAAlMxAAIxNg..*; SSOPRDLB=tdc112
+if-modified-since:
+Thu, 16 Jan 2025 09:52:40 GMT
+if-none-match:
+W/"476-1946e877a40"
+priority:
+u=0, i
+sec-ch-ua:
+"Chromium";v="134", "Not:A-Brand";v="24", "Google Chrome";v="134"
+sec-ch-ua-mobile:
+?0
+sec-ch-ua-platform:
+"Windows"
+sec-fetch-dest:
+iframe
+sec-fetch-mode:
+navigate
+sec-fetch-site:
+cross-site
+sec-fetch-storage-access:
+active
+upgrade-insecure-requests:
+1
+user-agent:
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36
+
+
+
+Working without iframe [Request Headers]
+:authority:
+coe-1f-services-sit-east.ebiz.verizon.com
+:method:
+GET
+:path:
+/consumption-ui/
+:scheme:
+https
+accept:
+text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+accept-encoding:
+gzip, deflate, br
+accept-language:
+en-US,en;q=0.9
+cache-control:
+max-age=0
+cookie:
+SSODEVLB=31; SSOUATLB=33; SSOUATSESSION=V1er3CNIZ0i1kpdexXDRA34hjzI.*AAJTSQACMDIAAlNLABxySnBIbGNrdDBOYlJ4NXVoMnV5eERuTE1Majg9AAR0eXBlAANDVFMAAlMxAAIxNA..*; CTC=""; SSODEVSESSION=789ZyZiosBmjoxV33jSrlw7d7Hs.*AAJTSQACMDIAAlNLABxPZWJna0UwbTBqV0czUElldVliRW52TTRkeXM9AAR0eXBlAANDVFMAAlMxAAIxNg..*; SSOPRDLB=tdc112; IWATARGET=CHALLENGE=&SMAGENTNAME=$SM$LCU5S3YXkpUFUfLD%2fTO1tUnls1AogbcNUeBjhCqxD2zVygAknygZlrlOo7hG2DLr&TARGET=$SM$HTTPS%3a%2f%2ffederation%2everizon%2ecom%2fonesso%2fiwa2%2fvzidp3%2ejsp%3fSAMLRequest%3dfVLbbtswDP0VQe$%2B$%2BxJdchDhFtqJYgQwLEncPfSlUmW7U2ZQnyt7Wr6$%2FiJFj7EkAvIg8PyXO4vPnbNmwAS9pgwSdhzBmgMpXGl4I$%2FlHfBnN$%2BsliTbJunEuncH3MHvHsgxX4gkTpmC9xaFkaRJoGyBhFNiv$%2F6$%2BEUkYi84aZ5RpOFsTgXW$%2B1VeD1Ldg92AHreBhtyn4wbmORBS9Av7SSAE6moRDp0I$%2Fnn4zGCrTRsdgRKB6q92$%2FHcimjWqNmg4b86KRs1s$%2FmkbpxnUujDVUYMfYJy6DQGQi$%2FUcm0fCmqy4NX6nj7M5YBeOuBa9lQ8DZ$%2FW3Bnya5WswA4iRN86yuYV5Nq2mSVs$%2BL2SLPZD1Vc1XlmUfTVhLpAf7XE$%2FVwj$%2BQkuoIncZIHceZfGScim4l0Hk6y$%2BJGz7VmqLxpPFlzT9fkEIvGtLLfB9se$%2B5OznxUoP4GfjxNjdfnTsOrG82DRq0Up3HX6M6CqoR6gAdN4avvLqXpz0Kgf$%2BCKpeHUmX0cepVufv5$%2BtavQM$%3D%26RelayState%3dhttps$%3A$%2F$%2Fjenkins-nts1%2evpc%2everizon%2ecom$%2Fnts1$%2FsecurityRealm$%2FfinishLogin; SMSESSION=""
+if-modified-since:
+Thu, 16 Jan 2025 09:52:40 GMT
+if-none-match:
+W/"476-1946e877a40"
+priority:
+u=0, i
+sec-ch-ua:
+"Chromium";v="134", "Not:A-Brand";v="24", "Google Chrome";v="134"
+sec-ch-ua-mobile:
+?0
+sec-ch-ua-platform:
+"Windows"
+sec-fetch-dest:
+document
+sec-fetch-mode:
+navigate
+sec-fetch-site:
+none
+sec-fetch-user:
+?1
+upgrade-insecure-requests:
+1
+user-agent:
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36

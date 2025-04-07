@@ -1,92 +1,23 @@
-27/03/2025 -> As per root analysis this api call () And project creation of [ Fiber assignment/ Access] works through project-intiation & consumption-ui react application 28/03/2025 -> local code set-up done in project-intiation & consumption-ui. When I try to replicate the issue in local, application is not up and running in local due to "Failed to set the 'domain' property on 'Document' " 01/04/2025 -> I tried all the possible ways to resolve the issue to run the application in local but the error still persists then, connect with @sasi kumar 02/04/2025 ->
+INC014220011 
+
+NFID: 2501ANRQ.212
+
+EWO Name: GREENSBORO_NC_CUP_9005_W_MARKET_ST_COLFAX
 
 
 
-not Working within iframe [Request Headers]
 
-authority:
-coe-1f-services-sit-east.ebiz.verizon.com
-:method:
-GET
-:path:
-/consumption-ui/
-:scheme:
-https
-accept:
-text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
-accept-encoding:
-gzip, deflate, br
-accept-language:
-en-US,en;q=0.9
-cookie:
-SSODEVLB=31; SSOUATLB=33; SSOUATSESSION=V1er3CNIZ0i1kpdexXDRA34hjzI.*AAJTSQACMDIAAlNLABxySnBIbGNrdDBOYlJ4NXVoMnV5eERuTE1Majg9AAR0eXBlAANDVFMAAlMxAAIxNA..*; SSODEVSESSION=789ZyZiosBmjoxV33jSrlw7d7Hs.*AAJTSQACMDIAAlNLABxPZWJna0UwbTBqV0czUElldVliRW52TTRkeXM9AAR0eXBlAANDVFMAAlMxAAIxNg..*; SSOPRDLB=tdc112
-if-modified-since:
-Thu, 16 Jan 2025 09:52:40 GMT
-if-none-match:
-W/"476-1946e877a40"
-priority:
-u=0, i
-sec-ch-ua:
-"Chromium";v="134", "Not:A-Brand";v="24", "Google Chrome";v="134"
-sec-ch-ua-mobile:
-?0
-sec-ch-ua-platform:
-"Windows"
-sec-fetch-dest:
-iframe
-sec-fetch-mode:
-navigate
-sec-fetch-site:
-cross-site
-sec-fetch-storage-access:
-active
-upgrade-insecure-requests:
-1
-user-agent:
-Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36
+NFID: 2501ANRQ.201
+User try to create "NFID" they getting error "Unable to complete your request" but NFID created backend with out data. FYR see the attached screenshot.
 
 
 
-Working without iframe [Request Headers]
-:authority:
-coe-1f-services-sit-east.ebiz.verizon.com
-:method:
-GET
-:path:
-/consumption-ui/
-:scheme:
-https
-accept:
-text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
-accept-encoding:
-gzip, deflate, br
-accept-language:
-en-US,en;q=0.9
-cache-control:
-max-age=0
-cookie:
-SSODEVLB=31; SSOUATLB=33; SSOUATSESSION=V1er3CNIZ0i1kpdexXDRA34hjzI.*AAJTSQACMDIAAlNLABxySnBIbGNrdDBOYlJ4NXVoMnV5eERuTE1Majg9AAR0eXBlAANDVFMAAlMxAAIxNA..*; CTC=""; SSODEVSESSION=789ZyZiosBmjoxV33jSrlw7d7Hs.*AAJTSQACMDIAAlNLABxPZWJna0UwbTBqV0czUElldVliRW52TTRkeXM9AAR0eXBlAANDVFMAAlMxAAIxNg..*; SSOPRDLB=tdc112; IWATARGET=CHALLENGE=&SMAGENTNAME=$SM$LCU5S3YXkpUFUfLD%2fTO1tUnls1AogbcNUeBjhCqxD2zVygAknygZlrlOo7hG2DLr&TARGET=$SM$HTTPS%3a%2f%2ffederation%2everizon%2ecom%2fonesso%2fiwa2%2fvzidp3%2ejsp%3fSAMLRequest%3dfVLbbtswDP0VQe$%2B$%2BxJdchDhFtqJYgQwLEncPfSlUmW7U2ZQnyt7Wr6$%2FiJFj7EkAvIg8PyXO4vPnbNmwAS9pgwSdhzBmgMpXGl4I$%2FlHfBnN$%2BsliTbJunEuncH3MHvHsgxX4gkTpmC9xaFkaRJoGyBhFNiv$%2F6$%2BEUkYi84aZ5RpOFsTgXW$%2B1VeD1Ldg92AHreBhtyn4wbmORBS9Av7SSAE6moRDp0I$%2Fnn4zGCrTRsdgRKB6q92$%2FHcimjWqNmg4b86KRs1s$%2FmkbpxnUujDVUYMfYJy6DQGQi$%2FUcm0fCmqy4NX6nj7M5YBeOuBa9lQ8DZ$%2FW3Bnya5WswA4iRN86yuYV5Nq2mSVs$%2BL2SLPZD1Vc1XlmUfTVhLpAf7XE$%2FVwj$%2BQkuoIncZIHceZfGScim4l0Hk6y$%2BJGz7VmqLxpPFlzT9fkEIvGtLLfB9se$%2B5OznxUoP4GfjxNjdfnTsOrG82DRq0Up3HX6M6CqoR6gAdN4avvLqXpz0Kgf$%2BCKpeHUmX0cepVufv5$%2BtavQM$%3D%26RelayState%3dhttps$%3A$%2F$%2Fjenkins-nts1%2evpc%2everizon%2ecom$%2Fnts1$%2FsecurityRealm$%2FfinishLogin; SMSESSION=""
-if-modified-since:
-Thu, 16 Jan 2025 09:52:40 GMT
-if-none-match:
-W/"476-1946e877a40"
-priority:
-u=0, i
-sec-ch-ua:
-"Chromium";v="134", "Not:A-Brand";v="24", "Google Chrome";v="134"
-sec-ch-ua-mobile:
-?0
-sec-ch-ua-platform:
-"Windows"
-sec-fetch-dest:
-document
-sec-fetch-mode:
-navigate
-sec-fetch-site:
-none
-sec-fetch-user:
-?1
-upgrade-insecure-requests:
-1
-user-agent:
-Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36
+
+INC014159556 - Canvas keeps erroring out while trying to create projects.
+
+When I do the PDR review task and need to generate BAU EWO, I fill out all of the information for the project and submit, Canvas errors out and gives the message "Error Failure Please try again later!" shown in the attachment. Even though it fails, it created the project with none of the information transferring to the EWO. I try to cancel the EWO but that also fails. The following EWO's were created by Canvas in error and need to be canceled. 2501DSVD.47, 2501DSVD.48, 2501DSVD.50, 2501DSVD.51, 2501DSVD.52, 2501DSVD.53, 2501DSVD.54, 2501DSVD.55, 2501DSVD.57, 2501DSVD.58, 2501DSVD.59, 2501DSVD.60, 2501DSVD.61, 2501DSVD.62, 2501DSVD.63, 2501DSVD.64, 2501DSVD.65, 2501DSVD.66 and 2501DSVD.67. So there are two problems that need to be corrected - Problem number 1 is that canvas errors out saying it failed to create a project when in fact it did but with no information. Problem number 2 is that all of the projects canvas created in error need to be canceled. Please resolve both issues before closing this ticket.
+
+
+
+
+Request and Response added in screenshot.

@@ -1,23 +1,32 @@
-INC014220011 
+JIRA Ticket no PEDS- 1450
+Title: CQ milestone got updated to N/A by forecast system
+Description: In fuze audits it says that the CQ milestone was updated on 09/04/2024 08:36 am to N/A status by "forecast, system" however there are no forecast rule or logic rule on the CONQUEST CQ MILESTONE in OPW market. 
 
-NFID: 2501ANRQ.212
-
-EWO Name: GREENSBORO_NC_CUP_9005_W_MARKET_ST_COLFAX
-
-
-
-
-NFID: 2501ANRQ.201
-User try to create "NFID" they getting error "Unable to complete your request" but NFID created backend with out data. FYR see the attached screenshot.
+Affected user: patricia.clifford@verizonwireless.com;
+Market name : OPW
+https://fuze.verizon.com/spm/projects.jsp?projectId=2473748
 
 
+JIRA Ticket no PEDS- 1457
+Title: Project parent child relationship is not getting removed
+Description: Need to remove the parent child relationship for project 16040203 as they are not relevant to the parent project 16117750. The only hub parent project 16040527 should be present. There should be a delete button button present in UI of project details page(check attached snippet)
+comments: Atukuri, Dharani added a comment - 09/Apr/25 9:34 PM
+Sandberg, Troy CharlesThe issue is user is trying to delete hub parent but there is no deleted button (Need to remove the parent child relationship for project 16040203 as they are not relevant to the parent project 16117750.)
+there is a logic in the code to hide the action button when if projectType is not Initial Build' and subtype is hub_ready ,Could you please help me confirm if this is a bug or if this is the intended behavior?is its an expected logic do we need to remove the parent-child relationship mentioned in the ticket manually from the backend?
+if(projectType != 'Initial Build' && associationSubType === 'HUB_READY')
+
+{#fa fa-trash fa-lg text-brand-red delete-site-project-relation hide#}
+#"
+
+cc: Srinivasan, M, M, Isakki A Kaliraj,Govinda Swamy, Senthil Kumar
 
 
-INC014159556 - Canvas keeps erroring out while trying to create projects.
-
-When I do the PDR review task and need to generate BAU EWO, I fill out all of the information for the project and submit, Canvas errors out and gives the message "Error Failure Please try again later!" shown in the attachment. Even though it fails, it created the project with none of the information transferring to the EWO. I try to cancel the EWO but that also fails. The following EWO's were created by Canvas in error and need to be canceled. 2501DSVD.47, 2501DSVD.48, 2501DSVD.50, 2501DSVD.51, 2501DSVD.52, 2501DSVD.53, 2501DSVD.54, 2501DSVD.55, 2501DSVD.57, 2501DSVD.58, 2501DSVD.59, 2501DSVD.60, 2501DSVD.61, 2501DSVD.62, 2501DSVD.63, 2501DSVD.64, 2501DSVD.65, 2501DSVD.66 and 2501DSVD.67. So there are two problems that need to be corrected - Problem number 1 is that canvas errors out saying it failed to create a project when in fact it did but with no information. Problem number 2 is that all of the projects canvas created in error need to be canceled. Please resolve both issues before closing this ticket.
-
+this is my new jira tickets 
+i need resovle this issue how to fix and explain this issue properly
 
 
+JIRA Ticket no PEDS-1454
+Title: Description:FUZE Archive doesn't work for site page audits
+Description: Site Audit Fuze_Archive option does not display changes made over a year ago. 
 
-Request and Response added in screenshot.
+Example Site 61677598 - Project 15089095 were created 11/29/2017 but the only audit information that can be viewed is 4/5/2024. The project was cancelled on 2/25/2022 and from that time to now there should be an audit of the site status changing from RF-Reject to Cancelled.

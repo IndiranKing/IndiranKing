@@ -6,27 +6,22 @@ Affected user: patricia.clifford@verizonwireless.com;
 Market name : OPW
 https://fuze.verizon.com/spm/projects.jsp?projectId=2473748
 
+created group chat 
+me -> Hi 
+@Sumedha Parsewar
 
-JIRA Ticket no PEDS- 1457
-Title: Project parent child relationship is not getting removed
-Description: Need to remove the parent child relationship for project 16040203 as they are not relevant to the parent project 16117750. The only hub parent project 16040527 should be present. There should be a delete button button present in UI of project details page(check attached snippet)
-comments: Atukuri, Dharani added a comment - 09/Apr/25 9:34 PM
-Sandberg, Troy CharlesThe issue is user is trying to delete hub parent but there is no deleted button (Need to remove the parent child relationship for project 16040203 as they are not relevant to the parent project 16117750.)
-there is a logic in the code to hide the action button when if projectType is not Initial Build' and subtype is hub_ready ,Could you please help me confirm if this is a bug or if this is the intended behavior?is its an expected logic do we need to remove the parent-child relationship mentioned in the ticket manually from the backend?
-if(projectType != 'Initial Build' && associationSubType === 'HUB_READY')
+Application name : FUZE
+I working on this tickets.
+https://onejira.verizon.com/browse/PEDS-1450
+Description : [ In fuze audits it says that the CQ milestone was updated on 09/04/2024 08:36 am to N/A status by "forecast, system" however there are no forecast rule or logic rule on the CONQUEST CQ MILESTONE in OPW market. ]
+url : https://fuze.verizon.com/spm/projects.jsp?projectId=2473748
+Could you help me in identifying the service responsible for this status change...?
 
-{#fa fa-trash fa-lg text-brand-red delete-site-project-relation hide#}
-#"
-
-cc: Srinivasan, M, M, Isakki A Kaliraj,Govinda Swamy, Senthil Kumar
-
-
-this is my new jira tickets 
-i need resovle this issue how to fix and explain this issue properly
-
-
-JIRA Ticket no PEDS-1454
-Title: Description:FUZE Archive doesn't work for site page audits
-Description: Site Audit Fuze_Archive option does not display changes made over a year ago. 
-
-Example Site 61677598 - Project 15089095 were created 11/29/2017 but the only audit information that can be viewed is 4/5/2024. The project was cancelled on 2/25/2022 and from that time to now there should be an audit of the site status changing from RF-Reject to Cancelled.
+Sumedha Parsewar -> it must be project-service
+Sumedha Parsewar -> edge imp f date is changed may be some logic might be there which can change cq status...like we have in ae mile stone
+when edge imp F date changes it might be internally triggering Cq status. Check with CQ team, they can help you might be. also it started with edge impl F date there might be a forecast rule for that
+Also, their might be some procs, which will be doing this internally
+you may be need to check with someone who worked on edge impl milestone
+ @Raja from Onshore Edge Team
+ 
+Raja -> @Sumedha Parsewar I don't think so there is any link between CQ and Edge. For IB projects all Edge tasks will be N/A by default, we only have mod flows active

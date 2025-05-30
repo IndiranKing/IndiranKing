@@ -1,211 +1,601 @@
-// controller layer
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.vzw.fuze</groupId>
+    <artifactId>fuze-parent-cloud-pom</artifactId>
+    <version>3.0.2</version>
+    <packaging>pom</packaging>
+    <name>fuze-parent-cloud-pom</name>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.3.12</version>
+        <relativePath/>
+    </parent>
+    <properties>
+        <!-- Core build props -->
+        <java.version>17</java.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<surefire.version>3.2.5</surefire.version>
 
-@Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    @RequestMapping(value = "/updateNftreeNodeStatus", method = RequestMethod.POST)
-    @Operation(summary = "Update NfTree Node Status")
-    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Successful Result of Update NfTree Node Status"),
-	    @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {
-		    @Content(mediaType = "application/json") }), })
-    public ResponseEntity<EndpointResponse<String, String>> updateNftreeNodeStatus(
-	    @Valid @RequestBody UpdateNftreeNodeStatusRequest updateNftreeNodeStatusRequest, BindingResult bindingResult ) {
-	LOGGER.info("POST Endpoint /updateNftreeNodeStatus request:: " + updateNftreeNodeStatusRequest);
-	EndpointResponse<String, String> response = new EndpointResponse<String, String>(
-		"updateNftreeNodeStatus", "");
-	List<String> errorMessages = null;
-	try {
-	    if (bindingResult.hasErrors()) {
-		errorMessages = bindingResult.getAllErrors().stream()
-			.map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());
-		response.setTimestamp(new Date());
-		response.setStatusCode(HttpStatusCustom.VALIDATION_ERRORS.getStatusCode());
-		response.setErrors(errorMessages);
-		response.setStatusDescription(HttpStatusCustom.VALIDATION_ERRORS.getStatusDescription());
-		return new ResponseEntity<EndpointResponse<String, String>>(response, HttpStatus.OK);
-	    }
-	    iHutServce.updateNftreeNodeStatus(updateNftreeNodeStatusRequest, response);
-	} catch (Exception e) {
-	    LOGGER.error("Exception Occurred in updateNftreeNodeStatus():: ", e);
-	    response.setTimestamp(new Date());
-	    response.setStatusCode(HttpStatusCustom.METHOD_FAILED.getStatusCode());
-	    response.setStatusDescription("updateNftreeNodeStatus " + HttpStatusCustom.METHOD_FAILED.getStatusDescription());
-	    return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-	}
-	LOGGER.info("POST Endpoint /updateNftreeNodeStatus response:: " + response);
-	return new ResponseEntity<>(response, HttpStatus.OK);
-    } 
+        <!-- Spring props -->
+        <spring.version>6.4.5</spring.version>
+        <spring-boot.version>3.3.12</spring-boot.version>
+        <spring-cloud.version>4.1.1</spring-cloud.version>
+        <springdoc.openapi.version>2.4.0</springdoc.openapi.version>
+        <spring-cloud-old.version>1.4.7.RELEASE</spring-cloud-old.version>
+        <spring-cloud-netflix.version>2.2.10.RELEASE</spring-cloud-netflix.version>
 
-// Service layer
-public Integer updateNftreeNodeStatus(UpdateNftreeNodeStatusRequest updateNftreeNodeStatusRequest,
-	    EndpointResponse<String, String> response) {
-	Integer count = 0;
-	try {
-	    LOGGER.info("updateNftreeNodeStatus inputs:: updateNftreeNodeStatusRequest = "
-		    + updateNftreeNodeStatusRequest + ", response = " + response);
-	    String nfid = updateNftreeNodeStatusRequest.getNfid();
-	    Integer projectId = ihutDao.getProjectId(nfid);
-	    List<String> errors = new ArrayList<>();
-	    if (projectId == 0) {
-		response.setStatusCode(HttpStatusCustom.NO_DB_RECORDS_FOUND.getStatusCode());
-		response.setStatusDescription(HttpStatusCustom.NO_DB_RECORDS_FOUND.getStatusDescription());
-		errors.add("nfid " + nfid + " is not valid");
-	    } else {
-		DbWfmPropertiesRequestDTO dbWfmPropertiesRequestDTO = new DbWfmPropertiesRequestDTO();
-		dbWfmPropertiesRequestDTO.setDomainId(8);
-		dbWfmPropertiesRequestDTO.setKeyNames(Arrays.asList("IHUT_UPDATE_NFTREE_NODE_STATUS_URL"));
-		List<DbWfmPropertiesDTO> dbWfmPropertiesList = new ArrayList<>();
-		EndpointResponse<String, List<DbWfmPropertiesDTO>> getDbProps = new EndpointResponse<String, List<DbWfmPropertiesDTO>>(
-			"dbProperties", dbWfmPropertiesList);
-		
-		List<DbWfmPropertiesDTO> ihutUpdateNftreeNodeStatusUrl = this.getDbProperties(dbWfmPropertiesRequestDTO,
-			getDbProps);
-		
-		System.out.println("For testing ihutUpdateNftreeNodeStatusUrl "+ihutUpdateNftreeNodeStatusUrl); // code change
-		String externalUpdateComponentStatus = this.updateComponentStatus(projectId,
-			updateNftreeNodeStatusRequest, ihutUpdateNftreeNodeStatusUrl.get(0).getValue());
+        <!-- Other props -->
+        <cxf.version>3.4.10</cxf.version>
+        <tomcat.version>10.1.40</tomcat.version>
+        <jackson.version>2.13.5</jackson.version>
 
-		if (externalUpdateComponentStatus != null && !externalUpdateComponentStatus.trim().isEmpty()) {
-		    JSONParser jsonParser = new JSONParser();
-		    JSONObject updateCompStatusRespJsonObj = (JSONObject) jsonParser
-			    .parse(externalUpdateComponentStatus);
-		    JSONObject updateComponentStatusResponseData = (JSONObject) updateCompStatusRespJsonObj
-			    .get("updateComponentStatusResponse");
-		    if (updateComponentStatusResponseData.containsKey("statusCode")
-			    && "0".equalsIgnoreCase((String) updateComponentStatusResponseData.get("statusCode"))
-			    && updateComponentStatusResponseData.containsKey("nfDetails")
-			    && !((List) updateComponentStatusResponseData.get("nfDetails")).isEmpty()) {
-			count = ihutDao.updateNftreeNodeStatus(updateNftreeNodeStatusRequest);
-			if (count == 0) {
-			    response.setTimestamp(new Date());
-			    response.setStatusCode(HttpStatusCustom.FAILED_DB_UPDATE.getStatusCode());
-			    response.setStatusDescription(HttpStatusCustom.FAILED_DB_UPDATE.getStatusDescription());
-			    errors.add("Failed to update 'status' in DB");
-			} else {
-			    response.setData(updateNftreeNodeStatusRequest.getStatus());
-			    response.setStatusCode(HttpStatusCustom.SUCCESS.getStatusCode());
-			    response.setStatusDescription(HttpStatusCustom.SUCCESS.getStatusDescription());
-			}
-		    } else {
-			    response.setTimestamp(new Date());
-			    response.setStatusCode(HttpStatusCustom.INVALID_SERVICE_RESPONSE.getStatusCode());
-			    response.setStatusDescription(HttpStatusCustom.INVALID_SERVICE_RESPONSE.getStatusDescription()
-				    + " /updateComponentStatus");
-			    errors.add("Unsuccessful update of Component Status");
-		    }
-		} else {
-		    response.setTimestamp(new Date());
-		    response.setStatusCode(HttpStatusCustom.INVALID_SERVICE_RESPONSE.getStatusCode());
-		    response.setStatusDescription(HttpStatusCustom.INVALID_SERVICE_RESPONSE.getStatusDescription()
-			    + " /updateComponentStatus");
-		    errors.add("Unsuccessful update of Component Status");
-		}
-	    }
-	    response.setTimestamp(new Date());
-	    if (!errors.isEmpty())
-		response.setErrors(errors);
-	    if (errors.size() > 1) {
-		response.setStatusCode("-5");
-		response.setStatusDescription("Multiple errors found");
-	    }
-	} catch (Exception e) {
-	    LOGGER.error("Error in updateNftreeNodeStatus:: ", e);
-	    response.setTimestamp(new Date());
-	    response.setStatusCode(HttpStatusCustom.METHOD_FAILED.getStatusCode());
-	    response.setStatusDescription(
-		    "updateNftreeNodeStatus " + HttpStatusCustom.METHOD_FAILED.getStatusDescription());
-	}
-	LOGGER.info("updateNftreeNodeStatus returns:: count = " + count);
-	return count;
-    }
+        <log4j2.version>2.21.1</log4j2.version>
+        <jacoco.version>0.8.7</jacoco.version>
 
+        <!-- UT props -->
+        <mockito.version>4.5.1</mockito.version>
+    </properties>
 
-public List<DbWfmPropertiesDTO> getDbProperties(@Valid DbWfmPropertiesRequestDTO dbPropertiesRequest,
-	    EndpointResponse<String, List<DbWfmPropertiesDTO>> response) {
-	List<DbWfmPropertiesDTO> dbWfmPropertiesList = new ArrayList<>();
-	try {
-	    LOGGER.info("getDbProperties inputs:: dbPropertiesRequest = " + dbPropertiesRequest + ", response = "
-		    + response);
-	    dbWfmPropertiesList = ihutDao.getDbProperties(dbPropertiesRequest.getKeyNames(),
-		    dbPropertiesRequest.getDomainId());
-	    if (dbWfmPropertiesList.size() > 0) {
-		response.setTimestamp(new Date());
-		response.setStatusCode(HttpStatusCustom.SUCCESS.getStatusCode());
-		response.setStatusDescription(HttpStatusCustom.SUCCESS.getStatusDescription());
-		response.setData(dbWfmPropertiesList);
-		System.out.println("checking"); // indira
-	    } else {
-	    	System.out.println("else part");
-		response.setTimestamp(new Date());
-		response.setStatusCode(HttpStatusCustom.NO_DB_RECORDS_FOUND.getStatusCode());
-		response.setStatusDescription(HttpStatusCustom.NO_DB_RECORDS_FOUND.getStatusDescription()
-			+ " for keyName: " + dbPropertiesRequest.getKeyNames() + " and domainId: "
-			+ dbPropertiesRequest.getDomainId());
-	    }
+    <dependencies>
 
-	} catch (Exception e) {
-	    LOGGER.error("Error in getDbProperties:: ", e);
-	    response.setTimestamp(new Date());
-	    response.setStatusCode(HttpStatusCustom.METHOD_FAILED.getStatusCode());
-	    response.setStatusDescription("getDbProperties " + HttpStatusCustom.METHOD_FAILED.getStatusDescription());
-	}
-	LOGGER.info("getDbProperties returns:: dbWfmProperties = " + dbWfmPropertiesList);
-          ///  indira code   
-	
+        <!-- Open Spring Packages -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.tomcat.embed</groupId>
+                    <artifactId>tomcat-embed-el</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-log4j2</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-jul</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-to-slf4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-slf4j-impl</artifactId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>log4j-slf4j2-impl</artifactId>
+                    <groupId>org.apache.logging.log4j</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.yaml</groupId>
+                    <artifactId>snakeyaml</artifactId>
+                </exclusion>
+                <exclusion>
+                	<groupId>org.apache.logging.log4j</groupId>
+                	<artifactId>log4j-to-slf4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-jul</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-to-slf4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-slf4j-impl</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.tomcat.embed</groupId>
+                    <artifactId>tomcat-embed-el</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.tomcat.embed</groupId>
+                    <artifactId>tomcat-embed-websocket</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>jakarta.annotation</groupId>
+                    <artifactId>jakarta.annotation-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-jul</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.netflix.eureka</groupId>
+                    <artifactId>eureka-client</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.netflix.eureka</groupId>
+                    <artifactId>eureka-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework.security</groupId>
+                    <artifactId>spring-security-crypto</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.bouncycastle</groupId>
+                    <artifactId>bcprov-jdk15on</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-fileupload</groupId>
+                    <artifactId>commons-fileupload</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-hystrix-dashboard</artifactId>
+            <version>2.2.10.RELEASE</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-context-support</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
+            <version>2.2.10.RELEASE</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.bouncycastle</groupId>
+                    <artifactId>bcprov-jdk15on</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-context-support</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 
-	System.out.println("Heloooooooooooooo");
-	
+        <!-- Close Spring Packages -->
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>sockjs-client</artifactId>
+			<version>1.5.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.opencsv</groupId>
+			<artifactId>opencsv</artifactId>
+			<version>4.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.graalvm.js</groupId>
+			<artifactId>js</artifactId>
+			<version>22.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.graalvm.js</groupId>
+			<artifactId>js-scriptengine</artifactId>
+			<version>22.0.0</version>
+		</dependency>
+        <!-- Open Junit Packages -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-inline</artifactId>
+        </dependency>
+        <!-- Close Junit Packages -->
+    </dependencies>
 
-	return dbWfmPropertiesList;
-    }
+    <dependencyManagement>
+        <dependencies>
 
+            <!-- Open Spring Packages -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>2023.0.0</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-aspects</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <!-- Close Spring Packages -->
 
-// IHutDAO layer
+            <!-- Open Configuration Packages -->
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+                <version>${springdoc.openapi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.microsoft.sqlserver</groupId>
+                <artifactId>mssql-jdbc</artifactId>
+                <version>12.2.0.jre11</version>
+            </dependency>
+            <dependency>
+                <groupId>com.oracle</groupId>
+                <artifactId>ojdbc8</artifactId>
+                <version>12.2.0.1</version>
+            </dependency>
+            <dependency>
+                <groupId>c3p0</groupId>
+                <artifactId>c3p0-oracle-thin-extras</artifactId>
+                <version>0.9.0.2</version>
+            </dependency>
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>8.0.33</version>
+            </dependency>
+            <!-- Close External Packages -->
 
-public List<DbWfmPropertiesDTO> getDbProperties(List<String> keyNames, Integer domainId) {
-		List<DbWfmPropertiesDTO> dbWfmProperties = new ArrayList<>();
-		try {
+            <!-- Supporting External Packages -->
 
-			LOGGER.info("getDbProperties inputs:: keyNames = " + keyNames + ", domainId = " + domainId);
-	
-			
-			String sql = "SELECT DOMAIN_ID, KEY, VALUE FROM WFM_CORE.WFM_PROPERTIES "
-					+ "WHERE KEY IN (:keyNames) AND DOMAIN_ID = :domainId";
-			
-			MapSqlParameterSource params = new MapSqlParameterSource();
-			params.addValue("keyNames", keyNames);
-			params.addValue("domainId", domainId);
-			dbWfmProperties = wfmNamedParameterJdbcTemplate.query(sql, params, DbWfmPropertiesDTO.getMapper());
-			
-		} catch (Exception err) {
-			LOGGER.error("getDbProperties :: error::", err);
-		}
-		LOGGER.info("getDbProperties returns:: dbWfmProperties = " + dbWfmProperties);
-		System.out.println(dbWfmProperties);
-		return dbWfmProperties;
-	}
+            <dependency>
+                <groupId>com.jcraft</groupId>
+                <artifactId>jsch</artifactId>
+                <version>0.1.55</version>
+            </dependency>
+            <dependency>
+                <groupId>com.googlecode.json-simple</groupId>
+                <artifactId>json-simple</artifactId>
+                <version>1.1.1</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-collections</groupId>
+                <artifactId>commons-collections</artifactId>
+                <version>3.2.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.modelmapper</groupId>
+                <artifactId>modelmapper</artifactId>
+                <version>2.3.5</version>
+            </dependency>
+            <dependency>
+                <groupId>com.thoughtworks.xstream</groupId>
+                <artifactId>xstream</artifactId>
+                <version>1.4.20</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-text</artifactId>
+                <version>1.10.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.scala-lang</groupId>
+                <artifactId>scala-library</artifactId>
+                <version>2.13.11-M1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.verizon</groupId>
+                <artifactId>tsmetrics</artifactId>
+                <version>2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi</artifactId>
+                <version>5.2.3</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml</artifactId>
+                <version>5.2.3</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.jettison</groupId>
+                <artifactId>jettison</artifactId>
+                <version>1.5.4</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-compress</artifactId>
+                <version>1.24.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.verizon</groupId>
+                <artifactId>datacloud</artifactId>
+                <version>11</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.google.guava</groupId>
+                        <artifactId>guava</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.codehaus.jackson</groupId>
+                        <artifactId>jackson-mapper-asl</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.glassfish.jersey.core</groupId>
+                        <artifactId>jersey-server</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.verizon</groupId>
+                <artifactId>fuze-common</artifactId>
+                <version>3</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.glassfish.jersey.core</groupId>
+                        <artifactId>jersey-server</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.agileware</groupId>
+                <artifactId>smartunit</artifactId>
+                <version>0.10.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.reflections</groupId>
+                <artifactId>reflections</artifactId>
+                <version>0.10.2</version>
+            </dependency>
+            <dependency>
+                <groupId>com.mchange</groupId>
+                <artifactId>c3p0</artifactId>
+                <version>0.9.5.5</version>
+            </dependency>
+            <dependency>
+                <groupId>c3p0</groupId>
+                <artifactId>c3p0</artifactId>
+                <version>0.9.1.2</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>2.11.0</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-beanutils</groupId>
+                <artifactId>commons-beanutils</artifactId>
+                <version>1.9.4</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.jersey</groupId>
+                <artifactId>jersey-bundle</artifactId>
+                <version>1.19.4</version>
+            </dependency>
+			<!-- https://mvnrepository.com/artifact/com.sun.jersey/jersey-bundle -->
+			<dependency>
+				<groupId>org.glassfish.jersey.core</groupId>
+				<artifactId>jersey-server</artifactId>
+				<version>2.35</version>
+			</dependency>
+            <dependency>
+                <groupId>org.openjdk.nashorn</groupId>
+                <artifactId>nashorn-core</artifactId>
+                <version>15.4</version>
+            </dependency>
+            <dependency>
+                <groupId>org.json</groupId>
+                <artifactId>json</artifactId>
+                <version>20230227</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>33.1.0-jre</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.mail</groupId>
+                <artifactId>jakarta.mail-api</artifactId>
+                <version>2.1.3</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.xml.bind</groupId>
+                <artifactId>jakarta.xml.bind-api</artifactId>
+                <version>4.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-impl</artifactId>
+                <version>4.0.0</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>xalan</groupId>
+                <artifactId>xalan</artifactId>
+                <version>2.7.3</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.groovy</groupId>
+                <artifactId>groovy-all</artifactId>
+                <version>3.0.9</version>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.jolokia</groupId>
+                <artifactId>jolokia-core</artifactId>
+                <version>1.7.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-csv</artifactId>
+                <version>1.10.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpmime</artifactId>
+                <version>4.5.2</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.jersey</groupId>
+                <artifactId>jersey-client</artifactId>
+                <version>1.17.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.jersey.contribs</groupId>
+                <artifactId>jersey-multipart</artifactId>
+                <version>1.17.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>2.10.1</version>
+            </dependency>
+			<!-- Added for Site Service - START -->
+			<dependency>
+				<groupId>org.jasig.cas.client</groupId>
+				<artifactId>cas-client-core</artifactId>
+				<version>3.2.2</version>
+				<exclusions>
+					<exclusion>
+						<groupId>javax.servlet</groupId>
+						<artifactId>servlet-api</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.neo4j</groupId>
+				<artifactId>neo4j-cypher-compiler-2.2_2.11</artifactId>
+				<version>2.2.9</version>
+			</dependency>
+			<!-- Added for Site Service - END -->
+            <!-- Close External Packages -->
 
-public Integer updateNftreeNodeStatus(UpdateNftreeNodeStatusRequest updateNftreeNodeStatusRequest) {
-	    Integer count = 0;
-	    try {
-	        LOGGER.info("updateNftreeNodeStatus inputs:: updateNftreeNodeStatusRequest = " + updateNftreeNodeStatusRequest);
-	        String sql = "UPDATE WFM_NF.NF_IHUT_ORDER SET STATUS = :status WHERE NFID = :nfid";
-	        MapSqlParameterSource params = new MapSqlParameterSource();
-	        params.addValue("nfid", updateNftreeNodeStatusRequest.getNfid());
-	        params.addValue("status", updateNftreeNodeStatusRequest.getStatus());
-	        count = wfmNamedParameterJdbcTemplate.update(sql, params);
-	    } catch (Exception err) {
-	        LOGGER.error("updateNftreeNodeStatus :: error::", err);
-	    }
-	    LOGGER.info("updateNftreeNodeStatus returns:: count = " + count);
-	    return count;
-	}
+            <dependency>
+                <groupId>com.squareup.okio</groupId>
+                <artifactId>okio</artifactId>
+                <version>3.5.0</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M3</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.surefire</groupId>
+                        <artifactId>surefire-junit47</artifactId>
+                        <version>3.0.0-M3</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
 
+    <repositories>
+        <repository>
+            <id>spring-releases</id>
+            <url>https://repo.spring.io/libs-release</url>
+        </repository>
+    </repositories>
 
-I hit this url in postman testing tool "http://localhost:8080/insidehut-service/updateNftreeNodeStatus" Post method 
-{
-            "nfid": "2401AOFT",
-            "status": "completed"
-}
+    <pluginRepositories>
+        <pluginRepository>
+            <id>spring-releases</id>
+            <url>https://repo.spring.io/libs-release</url>
+        </pluginRepository>
+    </pluginRepositories>
 
-can you explain the flow of code flow will work 
+</project>

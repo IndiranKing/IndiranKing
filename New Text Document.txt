@@ -1,176 +1,28 @@
-Started by user S, Indiran
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-Running as SYSTEM
-[EnvInject] - Loading node environment variables.
-[EnvInject] - Preparing an environment for the build.
-[EnvInject] - Keeping Jenkins system variables.
-[EnvInject] - Keeping Jenkins build variables.
-[EnvInject] - Injecting contributions.
-Building remotely on NTS.APNV.Ginger.UAT.BuildNode2
- (GINGER_BUILD_UAT) in workspace /usr/apps/ginger/build/workspace/NTS.FUAV.Fuze.Folder.Devlopment.DeployDIT/NTS.FUAV.Fuze.Parent-Cloud-Pom.Devlopment.DeployDIT.ONPRIME.JAVA17
-[WS-CLEANUP] Deleting project workspace...
-[WS-CLEANUP] Deferred wipeout is used...
-[WS-CLEANUP] Done
-The recommended git tool is: NONE
-using credential SVC-GITLAB-FUZE-SSH-KEY-PK
-Cloning the remote Git repository
-Cloning repository git@gitlab.verizon.com:FUZE/fuze-cloud-parent-pom.git
- > /usr/bin/git init /usr/apps/ginger/build/workspace/NTS.FUAV.Fuze.Folder.Devlopment.DeployDIT/NTS.FUAV.Fuze.Parent-Cloud-Pom.Devlopment.DeployDIT.ONPRIME.JAVA17 # timeout=10
-Fetching upstream changes from git@gitlab.verizon.com:FUZE/fuze-cloud-parent-pom.git
- > /usr/bin/git --version # timeout=10
- > git --version # 'git version 2.43.5'
-using GIT_SSH to set credentials SVC-GITLAB-FUZE-SSH-KEY-PK
- > /usr/bin/git fetch --tags --force --progress -- git@gitlab.verizon.com:FUZE/fuze-cloud-parent-pom.git +refs/heads/*:refs/remotes/origin/* # timeout=10
- > /usr/bin/git config remote.origin.url git@gitlab.verizon.com:FUZE/fuze-cloud-parent-pom.git # timeout=10
- > /usr/bin/git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
-Avoid second fetch
-Seen branch in repository origin/1.0.10
-Seen branch in repository origin/1.0.11
-Seen branch in repository origin/1.0.12
-Seen branch in repository origin/1.0.13
-Seen branch in repository origin/1.0.14
-Seen branch in repository origin/1.0.15
-Seen branch in repository origin/1.0.16
-Seen branch in repository origin/1.0.7
-Seen branch in repository origin/1.0.8
-Seen branch in repository origin/1.0.9
-Seen branch in repository origin/1.1.0
-Seen branch in repository origin/1.1.0-netty
-Seen branch in repository origin/1.1.0_1
-Seen branch in repository origin/1.1.0_SF
-Seen branch in repository origin/1.1.0_security
-Seen branch in repository origin/1.1.0_test
-Seen branch in repository origin/1.1.0_tomcat
-Seen branch in repository origin/1.1.1
-Seen branch in repository origin/1.1.1-blackduck-gowri
-Seen branch in repository origin/1.1.1_sf
-Seen branch in repository origin/1.1.2
-Seen branch in repository origin/1.1.2_bd_fixes_dileep
-Seen branch in repository origin/2.0.0
-Seen branch in repository origin/2.0.1
-Seen branch in repository origin/2.0.2
-Seen branch in repository origin/3.0.1
-Seen branch in repository origin/3.0.2
-Seen branch in repository origin/3.0.3
-Seen branch in repository origin/3.0.3_blackduck_fixes
-Seen branch in repository origin/3.0.4-test
-Seen branch in repository origin/3.0.5-test
-Seen branch in repository origin/3.x.x
-Seen branch in repository origin/BlackDuckIssues_Fix
-Seen branch in repository origin/Development
-Seen branch in repository origin/Feature_dev_contract
-Seen branch in repository origin/Logback_fix
-Seen branch in repository origin/Logback_fix(reg)
-Seen branch in repository origin/NSSEC-100305_Latest
-Seen branch in repository origin/NSSEC-91049-2
-Seen branch in repository origin/NSSEC-94478_Tomcat_Upgrade
-Seen branch in repository origin/SpringUpgrad
-Seen branch in repository origin/aravind
-Seen branch in repository origin/aravind_old
-Seen branch in repository origin/backup_v_1.0.6
-Seen branch in repository origin/bd_fix/1.1.2
-Seen branch in repository origin/bd_scan_1209
-Seen branch in repository origin/cfx_version_update_12_10_2023
-Seen branch in repository origin/feature-dev-rp
-Seen branch in repository origin/feature-parent-cloud-pom
-Seen branch in repository origin/feature/17
-Seen branch in repository origin/feature/Blackduck_Vulnerability_Fix
-Seen branch in repository origin/feature/NSSEC-76343
-Seen branch in repository origin/feature/NSSEC-83713
-Seen branch in repository origin/feature/NSSEC-83728
-Seen branch in repository origin/feature/NSSEC-91044
-Seen branch in repository origin/feature/NSSEC-91044-1
-Seen branch in repository origin/feature/NSSEC-91047
-Seen branch in repository origin/feature/NSSEC-91048
-Seen branch in repository origin/feature/NSSEC-93061
-Seen branch in repository origin/feature/NSSEC-93061-2
-Seen branch in repository origin/feature/NSSEC-93061-3
-Seen branch in repository origin/feature/NTSWSC-5627
-Seen branch in repository origin/feature/TomcatUpdate
-Seen branch in repository origin/feature/shaik-1.1.2
-Seen branch in repository origin/feature_parent_pom
-Seen branch in repository origin/jackson_dependency_1.0.7
-Seen branch in repository origin/jackson_fix
-Seen branch in repository origin/jackson_fix_1.0.6
-Seen branch in repository origin/jar_upgrade_check
-Seen branch in repository origin/logback
-Seen branch in repository origin/logback_1.1.0
-Seen branch in repository origin/logback_fix2_1.1.0
-Seen branch in repository origin/master
-Seen branch in repository origin/migrate_java17
-Seen branch in repository origin/migration/Java17_ras
-Seen branch in repository origin/migration/java17_document-service
-Seen branch in repository origin/migration/java17_regulatory-audit-service
-Seen branch in repository origin/migration/java8_version
-Seen branch in repository origin/migration/java_upgrad17
-Seen branch in repository origin/migration/java_upgrad17_document
-Seen branch in repository origin/migration/java_upgrade17
-Seen branch in repository origin/migration/spring-boot-upgrade3.2.3
-Seen branch in repository origin/migrationj17
-Seen branch in repository origin/oss_fixes
-Seen branch in repository origin/parent
-Seen branch in repository origin/pdfbox-fix
-Seen branch in repository origin/pom_upgrade_dev_19_09
-Seen branch in repository origin/release/Dec29
-Seen branch in repository origin/revert-440c241c
-Seen branch in repository origin/revert-722e597f
-Seen branch in repository origin/revert_jackson_change
-Seen branch in repository origin/reverting_jackson_fix
-Seen branch in repository origin/spring_version_update
-Seen branch in repository origin/stage/2.0.1
-Seen branch in repository origin/uat
-Seen branch in repository origin/v_1.0.6
-Seen 96 remote branches
- > /usr/bin/git show-ref --tags -d # timeout=10
-Checking out Revision d2aedbff59e4c5821d24eea6f63ad16cc9f77455 (origin/NSSEC-94478_Tomcat_Upgrade)
- > /usr/bin/git config core.sparsecheckout # timeout=10
- > /usr/bin/git checkout -f d2aedbff59e4c5821d24eea6f63ad16cc9f77455 # timeout=10
-Commit message: "update spring version"
- > /usr/bin/git rev-list --no-walk b368f7b3d0ed9309f1c857e7f138342945c0ee52 # timeout=10
-New run name is 'GINGER.Build-46'
-Jenkins Artifactory Plugin version: 4.0.8
-Artifactory integration is disabled
-[NTS.FUAV.Fuze.Parent-Cloud-Pom.Devlopment.DeployDIT.ONPRIME.JAVA17] $ /usr/lib/jvm/java-17-openjdk/bin/java -classpath /usr/apps/maven/apache-maven-3.3.9/boot/* -Dmaven.home=/usr/apps/maven/apache-maven-3.3.9 -Dmaven.conf=/usr/apps/maven/apache-maven-3.3.9/conf -Dclassworlds.conf=/usr/apps/maven/apache-maven-3.3.9/bin/m2.conf -Dmaven.multiModuleProjectDirectory=/usr/apps/ginger/build/workspace/NTS.FUAV.Fuze.Folder.Devlopment.DeployDIT/NTS.FUAV.Fuze.Parent-Cloud-Pom.Devlopment.DeployDIT.ONPRIME.JAVA17/${APP_NAME} org.codehaus.plexus.classworlds.launcher.Launcher -f ${APP_NAME}/pom.xml install -Divapp=/apps/opt/fuze/properties/compliance-service-local.properties
-[INFO] Scanning for projects...
-[INFO]                                                                         
-[INFO] ------------------------------------------------------------------------
-[INFO] Building fuze-parent-cloud-pom 3.0.2
-[INFO] ------------------------------------------------------------------------
-[INFO] 
-[INFO] --- spring-boot-maven-plugin:3.4.5:repackage (repackage) @ fuze-parent-cloud-pom ---
-[INFO] ------------------------------------------------------------------------
-[INFO] BUILD FAILURE
-[INFO] ------------------------------------------------------------------------
-[INFO] Total time: 1.253 s
-[INFO] Finished at: 2025-05-29T13:42:12-04:00
-[INFO] Final Memory: 39M/352M
-[INFO] ------------------------------------------------------------------------
-[ERROR] Failed to execute goal org.apache.maven.plugins:maven-install-plugin:3.1.4:install (default-install) on project fuze-parent-cloud-pom: The plugin org.apache.maven.plugins:maven-install-plugin:3.1.4 requires Maven version 3.6.3 -> [Help 1]
-[ERROR] 
-[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
-[ERROR] Re-run Maven using the -X switch to enable full debug logging.
-[ERROR] 
-[ERROR] For more information about the errors and possible solutions, please read the following articles:
-[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/PluginIncompatibleException
-ERROR: Couldn't execute Maven task. RuntimeException: Maven build failed with exit code 1
-ERROR: Build step failed with exception
-java.lang.RuntimeException: Maven build failed with exit code 1
-	at PluginClassLoader for artifactory//org.jfrog.hudson.pipeline.common.Utils.launch(Utils.java:281)
-Caused: java.lang.RuntimeException: Maven build failed. Couldn't execute Maven task. RuntimeException: Maven build failed with exit code 1
-	at PluginClassLoader for artifactory//org.jfrog.hudson.pipeline.common.Utils.launch(Utils.java:286)
-	at PluginClassLoader for artifactory//org.jfrog.hudson.maven3.Maven3Builder.RunMaven(Maven3Builder.java:121)
-	at PluginClassLoader for artifactory//org.jfrog.hudson.maven3.Maven3Builder.perform(Maven3Builder.java:101)
-	at hudson.tasks.BuildStepMonitor$1.perform(BuildStepMonitor.java:20)
-	at hudson.model.AbstractBuild$AbstractBuildExecution.perform(AbstractBuild.java:818)
-	at hudson.model.Build$BuildExecution.build(Build.java:199)
-	at hudson.model.Build$BuildExecution.doRun(Build.java:164)
-	at hudson.model.AbstractBuild$AbstractBuildExecution.run(AbstractBuild.java:527)
-	at hudson.model.Run.execute(Run.java:1833)
-	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:44)
-	at hudson.model.ResourceController.execute(ResourceController.java:101)
-	at hudson.model.Executor.run(Executor.java:446)
-Build step 'Invoke Artifactory Maven 3' marked build as failure
-New run name is 'GINGER.Build-46'
-Skipped archiving because build is not successful
-Notifying upstream projects of job completion
-Finished: FAILURE
+@Configuration
+public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(
+                    new AntPathRequestMatcher("/swagger-ui.html"),
+                    new AntPathRequestMatcher("/swagger-ui/**"),
+                    new AntPathRequestMatcher("/openspispec"),
+                    new AntPathRequestMatcher("/openspispec/**"),
+                    new AntPathRequestMatcher("/v3/api-docs"),
+                    new AntPathRequestMatcher("/v3/api-docs/**")
+                ).permitAll()
+                .anyRequest().authenticated()
+            )
+            .csrf(csrf -> csrf.disable());
+
+        return http.build();
+    }
+}

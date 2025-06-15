@@ -1,0 +1,43 @@
+PEDS-1677 
+Title : 6 DF NFID's that are "IN EFFECT" Order Status in CE did not update FUZE SPM with Circuit Delivered (A) date
+
+Description: 6 DF NFID's that are "IN EFFECT" Order Status in CE did not update FUZE SPM with Circuit Delivered (A) date
+Please see 2 attachments. 1 is the list of DF Orders with this issue, the other attachment is an example of the issue.
+All DF Orders reflect an "IN EFFECT" Date in FUZE Ordering tool, but in FUZE SPM, the Circuit Delivered (A) Date seems to have been removed. RAN team needs this date, which comes from CoE in order to final complete their work as delivered.
+
+10027061 DF 3 2004BJJK 1710AIIS.72 12/4/2020
+10017985 DF 6 1910DAXX 1710AIIS.30 8/13/2020
+10017964 DF 3 1910CZQO 1710AIIS.32 9/5/2020
+10017965 DF 5 1910CZSG 1710AIIS.31 12/10/2020
+10017968 DF 10 1910CZVT 1710AIIS.34 6/28/2021
+10073472 DF 3 2109BUXQ 1710AHZV.66 9/28/2021
+
+comments : You should just be able to re-sync the orders to the FUZE Projects so the Circuit Delivered (A) field is auto-populated
+
+PEDS-
+
+Title: coffee fields in fuze are not properly sync
+
+Description:
+INC014289298
+   
+   
+
+hello,
+
+Please see AYS tickets INC014211178  (closed prematurely) and new INC014286464 for dates not flowing from COE/Canvas to SPM for the following OneFiber required fields (Est, Act; (F) and (A)):
+
+Fiber Permits Received
+Fiber Construction Started 
+Cable Placed
+Splice and Test
+
+See 17152961 SMC_WEST_COL_NODE-10 - A 1807AAVK.493 for example, pictures attached.
+
+Multiple reports of dates not flowing from 1F PMs for forecast and actual dates needed for SMC site activation in CARTN.  COE required fields needed for Transport MS, Transport Delivery section ahead of RTI and Activation on SPM side.
+
+This issue needs immediate escalation to Dev on both sides to test and resolve.  Data sent is not received, with negative impact on multiple SMC Cband site activations.
+
+Project Id: 123456789;
+
+FYR: this has been synced when we try through manually.

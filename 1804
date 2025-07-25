@@ -1,7 +1,19 @@
 Regarding PEDS 1804
-this issue of site ID and Cluster NFID creating 
+After debug this issue we found  two diff flavor.
+
+1). Site NFID not create.
+2). Cluster NFID not create.
+about 2nd Cluster NFID not create
+where the Site NFID was not populating in the FUZE UI.
+After our investigation, we found that FUZE is successfully sending the JSON request to WFM (COOS), and both the Site NFID and Cluster NFID are being correctly created and saved in the WFM database.
+However, the data was not reflecting on the FUZE UI due to a sync gap.
+We’ve identified a workaround to update the Site NFID and Cluster NFID on our side. The workaround has been tested and is working as expected.
+
+but, 1st problem of Site NFID not created issue 
+this issue of site ID and Cluster NFID creating is acquiring 
 incident no : INC014915584 1FVZW-16027862-177221011 Unable to find existing site Nfid or create a new Site Nfid. 
 This (WFM onefiber-site-management) service do create Site nfid and cluster nfif.
+When transport vendor is One Fiber, Proposed Hub Site Name, Fiber Count and UACE are mandatory for creating Json from FUZE.
 Cluster ID generate based on (marketName, clusterName) or (primaryMarket, clusterName)
 
 Site NFID generate based on (transactionId, clusterId, clusterNfId, siteId, getNFUrl,clusterName, siteName, isGrandChild) or (transactionId, parentSiteID, parentSiteNfId, siteId,
@@ -9,14 +21,10 @@ Site NFID generate based on (transactionId, clusterId, clusterNfId, siteId, getN
 
 This rc.generateChildNfId() funcnality comes from RestClient.java in onefiber-site-management for create Site NFID
 
+For that onefiber-site-management service we can't see logs besause some seurity perpose they added plugin so, we cant able see logs 
+thats why we created project id problem details doc and shared into Shashank Agrahari he is checking, he try to resolve this issue based on workaround and we following him 
 
-This is regarding the escalated issue PEDS-1320, where the Site NFID was not populating in the FUZE UI.
 
-After our investigation, we found that FUZE is successfully sending the JSON request to WFM (COOS), and both the Site NFID and Cluster NFID are being correctly created and saved in the WFM database.
+=======================================
+Create a mail for we have work and analysed abut this issue 
 
-However, the data was not reflecting on the FUZE UI due to a sync gap.
-
-We’ve identified a workaround to update the Site NFID and Cluster NFID on our side. The workaround has been tested and is working as expected.
-I have informed Moovendiran as well, and he tried an API call to update the latest data — it’s also working successfully.
-
-We are now working to ensure proper data sync between WFM and FUZE systems going forward.

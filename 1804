@@ -28,3 +28,72 @@ thats why we created project id problem details doc and shared into Shashank Agr
 =======================================
 Create a mail for we have work and analysed abut this issue 
 
+----
+
+Here’s a clear and structured email you can send to Kavirasan with your analysis and current status:
+
+
+---
+
+Subject: Analysis & Work Progress on PEDS-1804 – Site & Cluster NFID Creation Issues
+
+Hi Kavirasan,
+
+This is regarding PEDS-1804, and after detailed debugging we found two different scenarios causing issues:
+
+
+---
+
+✅ 1) Cluster NFID Not Created / Not Populating in FUZE UI
+
+FUZE is successfully sending the JSON request to WFM (COOS).
+
+Both Site NFID and Cluster NFID are being created and saved correctly in the WFM database.
+
+However, the data was not reflecting in FUZE UI due to a sync gap.
+
+We have identified a workaround to update Site NFID and Cluster NFID on our side.
+
+This workaround has been tested and confirmed working.
+
+
+
+---
+
+❌ 2) Site NFID Not Created
+
+This issue still persists. Example incident: INC014915584 (TransactionId: 1FVZW-16027862-177221011) shows “Unable to find existing site NFID or create a new Site NFID.”
+
+The WFM onefiber-site-management service is responsible for creating Site NFID and Cluster NFID.
+
+Mandatory fields for FUZE JSON:
+
+For Cluster ID: (marketName, clusterName) or (primaryMarket, clusterName)
+
+For Site NFID: (transactionId, clusterId, clusterNfId, siteId, getNFUrl, clusterName, siteName, isGrandChild)
+
+Or (transactionId, parentSiteID, parentSiteNfId, siteId, getNFUrl, parentSiteName, siteName, isGrandChild)
+
+
+
+The actual NFID creation logic comes from rc.generateChildNfId() in RestClient.java within onefiber-site-management.
+
+
+Currently, we cannot view the onefiber-site-management logs due to a security plugin restricting access.
+
+We have documented the Project ID problem details and shared it with Shashank Agrahari, who is analyzing and trying to resolve the issue based on the identified workaround.
+We are following up with him closely for further updates.
+
+
+---
+
+We will keep you posted as we progress further. Please let us know if you need any additional details.
+
+Thanks & Regards,
+Indiran S.
+
+
+---
+
+Would you like me to also create a separate short update for the user/escalation team summarizing just the high-level points (without technical details)?
+

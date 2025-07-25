@@ -1,0 +1,11 @@
+Regarding PEDS 1804
+this issue of site ID and Cluster NFID creating 
+incident no : INC014915584 1FVZW-16027862-177221011 Unable to find existing site Nfid or create a new Site Nfid. 
+This (WFM onefiber-site-management) service do create Site nfid and cluster nfif.
+Cluster ID generate based on (marketName, clusterName) or (primaryMarket, clusterName)
+
+Site NFID generate based on (transactionId, clusterId, clusterNfId, siteId, getNFUrl,clusterName, siteName, isGrandChild) or (transactionId, parentSiteID, parentSiteNfId, siteId,
+													getNFUrl, parentSiteName, siteName, isGrandChild);
+
+This rc.generateChildNfId() funcnality comes from RestClient.java in onefiber-site-management for create Site NFID
+

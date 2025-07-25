@@ -9,3 +9,14 @@ Site NFID generate based on (transactionId, clusterId, clusterNfId, siteId, getN
 
 This rc.generateChildNfId() funcnality comes from RestClient.java in onefiber-site-management for create Site NFID
 
+
+This is regarding the escalated issue PEDS-1320, where the Site NFID was not populating in the FUZE UI.
+
+After our investigation, we found that FUZE is successfully sending the JSON request to WFM (COOS), and both the Site NFID and Cluster NFID are being correctly created and saved in the WFM database.
+
+However, the data was not reflecting on the FUZE UI due to a sync gap.
+
+We’ve identified a workaround to update the Site NFID and Cluster NFID on our side. The workaround has been tested and is working as expected.
+I have informed Moovendiran as well, and he tried an API call to update the latest data — it’s also working successfully.
+
+We are now working to ensure proper data sync between WFM and FUZE systems going forward.

@@ -1,43 +1,93 @@
-PEDS-1677 
-Title : 6 DF NFID's that are "IN EFFECT" Order Status in CE did not update FUZE SPM with Circuit Delivered (A) date
 
-Description: 6 DF NFID's that are "IN EFFECT" Order Status in CE did not update FUZE SPM with Circuit Delivered (A) date
-Please see 2 attachments. 1 is the list of DF Orders with this issue, the other attachment is an example of the issue.
-All DF Orders reflect an "IN EFFECT" Date in FUZE Ordering tool, but in FUZE SPM, the Circuit Delivered (A) Date seems to have been removed. RAN team needs this date, which comes from CoE in order to final complete their work as delivered.
 
-10027061 DF 3 2004BJJK 1710AIIS.72 12/4/2020
-10017985 DF 6 1910DAXX 1710AIIS.30 8/13/2020
-10017964 DF 3 1910CZQO 1710AIIS.32 9/5/2020
-10017965 DF 5 1910CZSG 1710AIIS.31 12/10/2020
-10017968 DF 10 1910CZVT 1710AIIS.34 6/28/2021
-10073472 DF 3 2109BUXQ 1710AHZV.66 9/28/2021
+============================
 
-comments : You should just be able to re-sync the orders to the FUZE Projects so the Circuit Delivered (A) field is auto-populated
+The CIRCUIT DELIVERED Date from CANVAS / CoE – is not being retained in various FUZE SPM Projects for Des Moines.
+As you can see from the PIC below, the Circuit Delivered (A) was sent to FUZE Ordering and then to FUZE SPM, but now the date is missing and it is required for FUZE to complete the Project requirements.
 
-PEDS-
+This is the list of Sites with missing Circuit Delivered (A) Dates
 
-Title: coffee fields in fuze are not properly sync
 
-Description:
-INC014289298
-   
-   
+QUESTION:  Can CoE re-push the Circuit Delivered dates to FUZE for the attached list of DF Orders? 
+If not, can FUZE re-push the “IN EFFECT” Date from FUZE Ordering to FUZE Projects?
 
-hello,
+Per PIC Below, the IN EFFECT Date for the Circuit Delivered Date is still seen in the FUZE Order, but it is no longer in FUZE SPM Project updates from CoE
 
-Please see AYS tickets INC014211178  (closed prematurely) and new INC014286464 for dates not flowing from COE/Canvas to SPM for the following OneFiber required fields (Est, Act; (F) and (A)):
 
-Fiber Permits Received
-Fiber Construction Started 
-Cable Placed
-Splice and Test
+Example
 
-See 17152961 SMC_WEST_COL_NODE-10 - A 1807AAVK.493 for example, pictures attached.
+https://fuzeuat.verizon.com/onefiber/app/jsp/onefiber-ordering/order-view.jsp?orderNumber=10027064  working
+https://fuzeuat.verizon.com/spm/projects.jsp?projectId=15252415   working                            "transContrFocFcDt": "04/19/2020"
 
-Multiple reports of dates not flowing from 1F PMs for forecast and actual dates needed for SMC site activation in CARTN.  COE required fields needed for Transport MS, Transport Delivery section ahead of RTI and Activation on SPM side.
+https://fuzeuat.verizon.com/onefiber/app/jsp/onefiber-ordering/order-view.jsp?orderNumber=10027061  working
+https://fuzeuat.verizon.com/spm/projects.jsp?projectId=15464599  not working                        "transContrFocFcDt": "null"
 
-This issue needs immediate escalation to Dev on both sides to test and resolve.  Data sent is not received, with negative impact on multiple SMC Cband site activations.
 
-Project Id: 123456789;
+Expected 
+"transContrFocFcDt": "05/16/2020",   working
+issue
+"transContrFocAcDt": ""              not working
 
-FYR: this has been synced when we try through manually.
+transContrFocAcDt data missing
+
+getProjectFields
+https://fuzeuat.verizon.com/spm/service/invoke/post/projects-gateway/projects-service/tracker/getProjectFields
+
+spring.datasource.passcode=sfuser123
+
+
+
+comment : Circuit delivered is populated based on the order completion 
+
+
+PROJ_TRANSPORT_ATTRIBUTES table is responable for to display fuze spm UI
+coulam name TRANS_CONTR_FOC_FC_DT
+
+
+The Main Think is we have 2 FUZE UI screen 
+1st is get date from onef-ordercollection-service (Date visiable ) it get data from Order id
+2nd is get from projects-service (Date Not visiable) it get data from project id 
+
+======================
+Its Showing circuit delivered Date 
+https://fuze.verizon.com/spm/service/invoke/post/onef-order-collection-gateway/onef-ocs/order-processing/getClrSegmentAndLosTAttributesByorderNumber
+"inEffectNotifDate": "2020-09-10 20:42:03"
+------------------
+{"uri":"onef-order-collection-gateway/onef-ocs/order-processing/getClrSegmentAndLosTAttributesByorderNumber","payload":"[\"10027060\"]"}
+=====================================
+
+
+=====================
+we are expected answer 
+https://fuze.verizon.com/spm/service/invoke/post/projects-gateway/projects-service/tracker/getProjectFields
+"transContrFocAcDt": "09/10/2020"
+---------------------
+{"uri":"projects-gateway/projects-service/tracker/getProjectFields","payload":"{\"siteProjectsId\":\"15464591\",\"taskName\":\"TRANSPORT_DELIVERY\"}"}===================
+
+------------ but issue is  
+Its not working
+https://fuze.verizon.com/spm/service/invoke/post/projects-gateway/projects-service/tracker/getProjectFields
+"transContrFocAcDt": ""
+---------------------
+{"uri":"projects-gateway/projects-service/tracker/getProjectFields","payload":"{\"siteProjectsId\":\"15464691\",\"taskName\":\"TRANSPORT_DELIVERY\"}"}===================
+
+Problem is Coffe side updating Circuit delivered date, splice test date and more to FUZE
+coffe UI screen side populated updated date but in FUZE side UI screen it not showing 
+
+API1 = /data-sync/nartoonefiber/narsync/spokeBySiteNfid  from fuze side to sync the wfm data to fuze db
+=================
+service name : Fuze onefiber-sync-service
+"/narsync/spokeBySiteNfid" -> manualPeerSync -> transitionSiteStatus -> updateSiteRecordCO "
+updateSiteRecordCO
+==============
+
+
+
+
+
+
+
+
+
+
+

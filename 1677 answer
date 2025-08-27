@@ -1,0 +1,20 @@
+Peds 1677
+
+https://fuze.verizon.com/spm/projects.jsp?projectId=15464599
+
+08/22/2025 03:11 PM  I triggered this API call for update circuit deliver date
+
+https://fuze.verizon.com/secured/onefiber-gateway/onefiber-service/order/segment/fuze/update with payload
+
+same day 08/22/2025 03:36 PM, It automatically changed into null, Last modified by oneFiber, FUZE
+
+then i checked onfiber-service also[08/22/2025], there is no logs action/history for change into
+
+null
+
+-----------------------
+
+i shared logs with you Could you check
+could you check i shared logs zip file
+besaue, i might be unseen or missed that field
+------------------------

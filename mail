@@ -1,16 +1,34 @@
-Subject: Request for ADOM Approval – FUZE Application (Vast ID: 24466)
+Here’s a clear and professional draft mail you can send to the Fuze Dev POC:
 
-Hi Brian,
 
-I hope you're doing well.
+---
 
-I had submitted an ADOM request for the FUZE application (Vast ID: 24466) on 15/04/2025, which is currently still pending with you. I understand that you are on vacation until 28th April.
+Subject: Clarification on Circuit Delivery Date Not Updating
 
-However, I have some tasks that need to be completed this week, and this access is essential. I have checked with Senthil Kumar Govinda Samy, Kshitiz Gupta, and Charan Donthu, and they all confirmed that only you have the authority to approve this request.
+Hi [POC Name],
 
-If possible, could you kindly approve the ADOM request at your earliest convenience? Alternatively, please let me know if there is any other way to get this access granted in your absence.
+During my analysis, I found that the Circuit Delivery Date is not getting updated correctly in FUZE.
 
-Thank you for your support.
+From my investigation:
 
-Best regards,
-Indiran S.
+When the completion event occurs, the system tries to update the CIRCUIT_DELIVERY_EST/ACT fields.
+
+However, these updates are not persisting because the trigger ONEF_TRG_PROJ_TRANSPORT_ATTRIBUTES_BEFORE_INSERT_OR_UPDATE resets or nullifies these fields based on the value of LAST_MODIFIED_BY.
+
+Currently, only updates made by system users like Fuze-OneFiber or NARSYNC are allowed.
+
+In our case, the update is coming with LAST_MODIFIED_BY = GEN or REQUEST, so the trigger logic is treating it as a manual update and clearing the CIRCUIT_DELIVERY fields.
+
+
+Possible solution:
+Extend the trigger condition to also allow system updates from GEN or REQUEST. For example:
+
+:NEW.LAST_MODIFIED_BY not in('Fuze-OneFiber','NARSYNC','GEN','REQUEST')
+
+This would prevent the fields from being reset when the completion event is processed by these jobs.
+
+Could you please confirm if this solution aligns with the intended design, or if there’s another recommended approach from the FUZE side?
+
+Thanks & Regards,
+Indiran S
+
